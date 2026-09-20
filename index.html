@@ -1,0 +1,2336 @@
+<!DOCTYPE html>
+<html lang="ceb">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>G &amp; G Swine Breeding Farm — Records</title>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#15291F">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<style>
+:root{
+  --ink:#15291F;
+  --ink-2:#1D3A2C;
+  --paper:#ECF0E9;
+  --card:#FFFFFF;
+  --line:#D6DED3;
+  --line-soft:#E8EDE5;
+  --text:#1B241F;
+  --muted:#61705F;
+  --tag:#F2C230;
+  --tag-edge:#C09312;
+  --alert:#B93A26;
+  --alert-bg:#FBEDE9;
+  --good:#2C7A4F;
+  --good-bg:#E9F3EC;
+  --warn:#A86A0B;
+  --warn-bg:#FBF2E0;
+  --radius:10px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--paper);
+  color:var(--text);
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  font-size:15px;line-height:1.5;
+  -webkit-text-size-adjust:100%;
+  padding-bottom:76px;
+}
+input,select,textarea,button{font:inherit;color:inherit}
+.num{font-variant-numeric:tabular-nums}
+h1,h2,h3{margin:0;letter-spacing:-.015em;line-height:1.2}
+h1{font-size:19px;font-weight:700}
+h2{font-size:17px;font-weight:700}
+h3{font-size:14px;font-weight:700}
+a{color:var(--ink-2)}
+
+/* ---------- shell ---------- */
+header.top{
+  background:var(--ink);color:#EFF3EC;
+  padding:10px 14px;display:flex;align-items:center;gap:10px;
+  position:sticky;top:0;z-index:40;
+}
+header.top .brand{font-weight:700;letter-spacing:-.02em;font-size:16px}
+header.top .when{margin-left:auto;font-size:12px;color:#A9BCA9;text-align:right;line-height:1.3}
+.synced{background:#294438;border:1px solid #3A5A49;color:#9DB89E;border-radius:999px;
+  width:28px;height:28px;font-size:13px;line-height:1;padding:0;cursor:pointer;flex:none}
+.synced.ok{color:#8FE0A6;border-color:#3F7A55}
+.synced.bad{color:#F2A28E;border-color:#7A4A3F}
+.synced.busy{color:var(--tag)}
+.code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11.5px;background:#101A14;color:#CFE3CB;
+  padding:10px 11px;border-radius:8px;overflow-x:auto;white-space:pre;-webkit-overflow-scrolling:touch}
+.encoder{background:#294438;border:1px solid #3A5A49;color:#DCE7DA;border-radius:999px;padding:4px 10px;font-size:12px;max-width:44vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+main{padding:12px 12px 24px;max-width:900px;margin:0 auto}
+
+nav.tabs{
+  position:fixed;left:0;right:0;bottom:0;z-index:50;
+  background:var(--ink);display:grid;grid-template-columns:repeat(var(--tabn,6),1fr);
+  padding-bottom:env(safe-area-inset-bottom);
+  border-top:1px solid #2C4A3A;
+}
+nav.tabs button{
+  background:none;border:0;color:#8FA790;padding:8px 2px 9px;
+  display:flex;flex-direction:column;align-items:center;gap:3px;
+  font-size:10.5px;font-weight:600;cursor:pointer;
+}
+nav.tabs button svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+nav.tabs button.on{color:var(--tag)}
+@media(min-width:880px){
+  body{padding-bottom:0;display:grid;grid-template-columns:186px 1fr;grid-template-rows:auto 1fr}
+  header.top{grid-column:1/-1}
+  nav.tabs{position:sticky;top:44px;height:calc(100vh - 44px);bottom:auto;grid-template-columns:1fr;align-content:start;border-top:0;border-right:1px solid #2C4A3A;padding:10px 8px}
+  nav.tabs button{flex-direction:row;justify-content:flex-start;gap:10px;font-size:13.5px;padding:10px 12px;border-radius:8px}
+  nav.tabs button.on{background:#233B2E}
+  main{padding:18px 22px 60px}
+}
+
+/* ---------- building blocks ---------- */
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:13px 14px;margin-bottom:11px}
+.card.tight{padding:10px 12px}
+.sect-head{display:flex;align-items:center;gap:8px;margin:18px 0 9px}
+.sect-head:first-child{margin-top:2px}
+.sect-head .count{margin-left:auto;font-size:12px;color:var(--muted)}
+.muted{color:var(--muted)}
+.small{font-size:12.5px}
+.tiny{font-size:11.5px}
+.row{display:flex;gap:8px;align-items:center}
+.row.wrap{flex-wrap:wrap}
+.spread{display:flex;gap:10px;align-items:center;justify-content:space-between}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+hr.sep{border:0;border-top:1px solid var(--line-soft);margin:10px 0}
+
+/* ear tag chip — plastic tag look */
+.tag{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--tag);border:1px solid var(--tag-edge);
+  color:#3D2E00;font-weight:700;font-variant-numeric:tabular-nums;
+  padding:2px 9px 2px 7px;border-radius:4px 8px 8px 4px;font-size:13px;
+}
+.tag::before{content:"";width:5px;height:5px;border-radius:50%;background:#3D2E0033;box-shadow:inset 0 1px 0 #0002}
+.tag.sm{font-size:11.5px;padding:1px 7px 1px 6px}
+.tag.boar{background:#D9E4EF;border-color:#9DB4CB;color:#1E3A54}
+
+.pill{display:inline-block;padding:2px 9px;border-radius:999px;font-size:11.5px;font-weight:600;border:1px solid transparent}
+.pill.g{background:var(--good-bg);color:var(--good);border-color:#BEDCC8}
+.pill.r{background:var(--alert-bg);color:var(--alert);border-color:#EDC6BC}
+.pill.w{background:var(--warn-bg);color:var(--warn);border-color:#EDD9AC}
+.pill.n{background:#EDF0EA;color:var(--muted);border-color:var(--line)}
+
+button.btn{
+  background:var(--ink-2);color:#F1F5EE;border:0;border-radius:8px;
+  padding:10px 14px;font-weight:600;font-size:14px;cursor:pointer;
+}
+button.btn:active{transform:translateY(1px)}
+button.btn.ghost{background:#fff;color:var(--ink-2);border:1px solid var(--line)}
+button.btn.tag{background:var(--tag);color:#3D2E00}
+button.btn.danger{background:#fff;color:var(--alert);border:1px solid #EDC6BC}
+button.btn.sm{padding:7px 11px;font-size:13px;border-radius:7px}
+button.btn.wide{width:100%}
+button.link{background:none;border:0;color:var(--ink-2);text-decoration:underline;cursor:pointer;padding:0;font-size:13px}
+:focus-visible{outline:2.5px solid #2C7A4F;outline-offset:2px}
+
+.stat{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:10px 11px}
+.stat b{display:block;font-size:22px;font-weight:700;letter-spacing:-.03em;font-variant-numeric:tabular-nums;line-height:1.1}
+.stat span{font-size:11.5px;color:var(--muted)}
+
+/* task lines */
+.task{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--line-soft)}
+.task:last-child{border-bottom:0}
+.task .when{min-width:52px;font-size:11.5px;font-weight:700;color:var(--muted);padding-top:2px;font-variant-numeric:tabular-nums}
+.task .body{flex:1;min-width:0}
+.task .body .t{font-weight:600;font-size:14px}
+.task .body .d{font-size:12.5px;color:var(--muted)}
+.task.late{background:linear-gradient(90deg,var(--alert-bg),transparent 60%);border-left:3px solid var(--alert);padding-left:8px;margin-left:-8px}
+.task.due{border-left:3px solid var(--tag);padding-left:8px;margin-left:-8px}
+.task.done .t{text-decoration:line-through;color:var(--muted);font-weight:500}
+
+/* the A.I. window panel — the one loud element */
+.aiwin{background:var(--ink);color:#EAF1E7;border-radius:var(--radius);padding:14px;margin-bottom:11px;border:1px solid #2C4A3A}
+.aiwin .lbl{font-size:12px;color:#9DB89E}
+.aiwin .clock{font-size:30px;font-weight:700;letter-spacing:-.03em;font-variant-numeric:tabular-nums;margin:2px 0 1px}
+.aiwin.open{background:#1B4A2F;border-color:#2E7A4C}
+.aiwin.open .clock{color:#B6F0C9}
+.aiwin .win{font-size:13px;color:#C9DAC6}
+.aiwin .row{margin-top:9px}
+
+.listitem{display:flex;gap:10px;align-items:center;padding:11px 12px;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);margin-bottom:7px;cursor:pointer;width:100%;text-align:left}
+.listitem .meta{flex:1;min-width:0}
+.listitem .meta .l1{font-weight:600;font-size:14px;display:flex;gap:7px;align-items:center;flex-wrap:wrap}
+.listitem .meta .l2{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.listitem .chev{color:#A8B5A6;font-size:18px}
+
+table.tbl{width:100%;border-collapse:collapse;font-size:13px}
+table.tbl th{text-align:left;font-size:11.5px;color:var(--muted);font-weight:600;padding:5px 6px;border-bottom:1px solid var(--line)}
+table.tbl td{padding:7px 6px;border-bottom:1px solid var(--line-soft);vertical-align:top}
+table.tbl td.n,table.tbl th.n{text-align:right;font-variant-numeric:tabular-nums}
+.scrollx{overflow-x:auto;-webkit-overflow-scrolling:touch}
+
+/* timeline */
+.tl{position:relative;padding-left:20px;margin:4px 0}
+.tl::before{content:"";position:absolute;left:5px;top:6px;bottom:6px;width:2px;background:var(--line)}
+.tl .n{position:relative;padding:6px 0}
+.tl .n::before{content:"";position:absolute;left:-18px;top:12px;width:10px;height:10px;border-radius:50%;background:#fff;border:2px solid var(--line)}
+.tl .n.ok::before{background:var(--good);border-color:var(--good)}
+.tl .n.now::before{background:var(--tag);border-color:var(--tag-edge)}
+.tl .n .t{font-weight:600;font-size:13.5px}
+.tl .n .s{font-size:12px;color:var(--muted)}
+
+/* forms + modal */
+.field{margin-bottom:11px}
+.field label{display:block;font-size:12.5px;font-weight:600;margin-bottom:4px}
+.field .hint{font-size:11.5px;color:var(--muted);margin-top:3px}
+.field input,.field select,.field textarea{
+  width:100%;padding:10px 11px;border:1px solid var(--line);border-radius:8px;background:#fff;font-size:15px;
+}
+.field textarea{min-height:66px;resize:vertical}
+.modal-bg{position:fixed;inset:0;background:#0D170FAA;z-index:100;display:flex;align-items:flex-end;justify-content:center}
+@media(min-width:700px){.modal-bg{align-items:center}}
+.modal{background:var(--paper);width:100%;max-width:560px;max-height:92vh;overflow:auto;border-radius:14px 14px 0 0;padding:16px 15px calc(20px + env(safe-area-inset-bottom))}
+@media(min-width:700px){.modal{border-radius:14px}}
+.modal h2{margin-bottom:3px}
+.modal .sub{font-size:12.5px;color:var(--muted);margin-bottom:13px}
+.modal .acts{display:flex;gap:9px;margin-top:14px}
+.modal .acts button{flex:1}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:92px;background:var(--ink);color:#EAF1E7;padding:10px 16px;border-radius:999px;z-index:200;font-size:13.5px;max-width:88vw;text-align:center;box-shadow:0 6px 20px #0003}
+@media(min-width:880px){.toast{bottom:26px}}
+.empty{text-align:center;padding:26px 14px;color:var(--muted);font-size:13.5px}
+.empty b{display:block;color:var(--text);font-size:15px;margin-bottom:3px}
+.searchbar{display:flex;gap:8px;margin-bottom:10px}
+.searchbar input{flex:1;padding:10px 12px;border:1px solid var(--line);border-radius:999px;background:#fff}
+.chipbar{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px;margin-bottom:4px}
+.chipbar button{white-space:nowrap;background:#fff;border:1px solid var(--line);color:var(--muted);padding:6px 12px;border-radius:999px;font-size:12.5px;font-weight:600;cursor:pointer}
+.chipbar button.on{background:var(--ink-2);color:#fff;border-color:var(--ink-2)}
+.backlink{background:none;border:0;color:var(--muted);font-size:13px;padding:0 0 8px;cursor:pointer;font-weight:600}
+.money{font-variant-numeric:tabular-nums;font-weight:700}
+.bar{height:7px;border-radius:4px;background:var(--line-soft);overflow:hidden;margin-top:5px}
+.bar i{display:block;height:100%;background:var(--good)}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+/* ---------- sign in ---------- */
+body.out{padding-bottom:0}
+body.out nav.tabs{display:none}
+@media(min-width:880px){body.out{grid-template-columns:1fr}}
+.signin{max-width:430px;margin:4vh auto 0}
+.signin .logo{display:block;width:160px;max-width:52%;margin:0 auto 14px}
+.signin h1{font-size:23px;margin-bottom:4px}
+.signin .lead{color:var(--muted);font-size:13.5px;margin-bottom:18px}
+.utile{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:var(--card);
+  border:1px solid var(--line);border-radius:12px;padding:13px 14px;margin-bottom:9px;cursor:pointer}
+.utile .av{width:38px;height:38px;border-radius:10px;background:var(--ink);color:var(--tag);
+  display:grid;place-items:center;font-weight:700;font-size:15px;flex:none}
+.utile .nm{font-weight:600;font-size:15px}
+.utile .rl{font-size:12px;color:var(--muted)}
+.pinbox{letter-spacing:.5em;text-align:center;font-size:22px!important;font-variant-numeric:tabular-nums}
+.roletag{display:inline-block;background:#233B2E;color:#CFE3CB;border-radius:999px;padding:2px 10px;font-size:11px;font-weight:600}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="brand" id="brand">G &amp; G Swine</div>
+  <button class="encoder" id="encoderBtn">Entered by: —</button>
+  <button class="synced" id="syncBtn" title="Cloud sync">○</button>
+  <div class="when" id="todayLbl"></div>
+</header>
+<nav class="tabs" id="tabs"></nav>
+<main id="view"></main>
+<div id="modalHost"></div>
+<script>
+/* ============================================================
+   PIGGERY RECORD  —  sows / piglets / fattening / money
+   Single file. Saves on the device. Backup via export/import.
+   ============================================================ */
+const KEY='piggery_v1';
+const DAY=86400000, HR=3600000;
+
+/* ---------- default data ---------- */
+function blank(){return{
+  meta:{farm:'G & G Swine Breeding Farm', encoder:'', created:Date.now(), v:2},
+  users:[], health:[], logins:[], tombs:[],
+  sows:[], boars:[], cycles:[], farrowings:[], tasks:[],
+  nursery:[], fatten:[], flogs:[], feeds:[], expenses:[],
+  workers:[], payroll:[], sales:[], notes:[]
+};}
+let db=blank();
+let VIEW='dash', SUB=null, FILTER='tanan', Q='';
+
+/* ---------- storage (artifact storage + localStorage fallback) ---------- */
+async function load(){
+  let raw=null;
+  try{ if(window.storage){ const r=await window.storage.get(KEY); if(r&&r.value) raw=r.value; } }catch(e){}
+  if(!raw){ try{ raw=localStorage.getItem(KEY); }catch(e){} }
+  if(raw){ try{ db=Object.assign(blank(), JSON.parse(raw)); }catch(e){} }
+}
+let saveTimer=null;
+function save(){
+  clearTimeout(saveTimer);
+  saveTimer=setTimeout(async()=>{
+    const s=JSON.stringify(db);
+    try{ if(window.storage) await window.storage.set(KEY,s); }catch(e){}
+    try{ localStorage.setItem(KEY,s); }catch(e){}
+    queueSync();
+  },120);
+}
+
+/* ---------- tiny helpers ---------- */
+const uid=p=>(p||'x')+Math.random().toString(36).slice(2,9)+Date.now().toString(36).slice(-3);
+const $=id=>document.getElementById(id);
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const num=v=>{const n=parseFloat(v);return isNaN(n)?0:n;};
+function todayISO(d){const t=d?new Date(d):new Date();return new Date(t.getTime()-t.getTimezoneOffset()*60000).toISOString().slice(0,10);}
+function nowLocal(){const t=new Date();return new Date(t.getTime()-t.getTimezoneOffset()*60000).toISOString().slice(0,16);}
+function startOf(d){const x=new Date(d);x.setHours(0,0,0,0);return x;}
+const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+function fdate(iso){ if(!iso) return '—'; const d=new Date(iso); if(isNaN(d)) return '—';
+  return MON[d.getMonth()]+' '+d.getDate()+', '+d.getFullYear(); }
+function fshort(iso){ if(!iso) return '—'; const d=new Date(iso); if(isNaN(d)) return '—'; return MON[d.getMonth()]+' '+d.getDate(); }
+function ftime(iso){ if(!iso) return ''; const d=new Date(iso); if(isNaN(d)) return '';
+  let h=d.getHours(), m=String(d.getMinutes()).padStart(2,'0'), ap=h<12?'am':'pm'; h=h%12||12; return h+':'+m+ap; }
+function fdt(iso){ return iso? fdate(iso)+' '+ftime(iso) : '—'; }
+function addD(iso,n){ const d=new Date(iso); d.setDate(d.getDate()+n); return todayISO(d); }
+function dDiff(a,b){ return Math.round((startOf(b)-startOf(a))/DAY); } // b minus a, in days
+function fromToday(iso){ return dDiff(todayISO(), iso); }
+function ageDays(birth){ return birth? dDiff(birth, todayISO()) : null; }
+function ageTxt(birth){ const d=ageDays(birth); if(d==null) return '—';
+  const m=Math.floor(d/30.44); return m>=12? (Math.floor(m/12)+'y '+(m%12)+'mo') : (m+' mo '+(d-Math.round(m*30.44))+'d'); }
+function peso(n){ return '\u20B1'+(Math.round(num(n)*100)/100).toLocaleString('en-PH',{minimumFractionDigits:0,maximumFractionDigits:2}); }
+function whenTxt(iso){ const n=fromToday(iso);
+  if(n===0) return 'TODAY'; if(n===1) return 'TOMORROW'; if(n===-1) return 'YESTERDAY';
+  return n<0? (Math.abs(n)+'d ago') : ('+'+n+'d'); }
+
+/* ---------- lookups ---------- */
+const sowOf=id=>db.sows.find(s=>s.id===id);
+const boarOf=id=>db.boars.find(b=>b.id===id);
+const tagOf=id=>{const s=sowOf(id);return s?s.tag:'?';};
+const cycleOf=id=>db.cycles.find(c=>c.id===id);
+const OPEN=['HEAT','BRED','PREGNANT'];
+const openCycle=sid=>db.cycles.filter(c=>c.sowId===sid&&OPEN.includes(c.status)).sort((a,b)=>(b.heatAt||'').localeCompare(a.heatAt||''))[0]||null;
+const openFarrow=sid=>db.farrowings.filter(f=>f.sowId===sid&&!f.weanDate).sort((a,b)=>b.date.localeCompare(a.date))[0]||null;
+const sowCycles=sid=>db.cycles.filter(c=>c.sowId===sid).sort((a,b)=>(b.heatAt||'').localeCompare(a.heatAt||''));
+
+/* ---------- status engine ---------- */
+function sowState(s){
+  if(s.status==='CULL') return {k:'CULL',label:'Culled / sold',cls:'n'};
+  const f=openFarrow(s.id);
+  if(f){ const d=dDiff(f.date, todayISO());
+    return {k:'LACT',label:'Lactating (D'+d+')',cls:'g',sub:'Wean: '+fshort(f.weanPlan)}; }
+  const c=openCycle(s.id);
+  if(c){
+    if(c.status==='HEAT'){
+      const w=aiWindow(c.heatAt);
+      return {k:'HEAT',label:'In heat — ready for A.I.',cls:'w',sub:'Breed: '+fshort(w.from)+' '+ftime(w.from)+'–'+ftime(w.to)};
+    }
+    if(c.status==='BRED') return {k:'BRED',label:'Bred (D'+dDiff(c.aiAt,todayISO())+') — watching',cls:'w',sub:'Due: '+fshort(c.dueDate)};
+    if(c.status==='PREGNANT') return {k:'PREG',label:'Pregnant (D'+dDiff(c.aiAt,todayISO())+')',cls:'g',sub:'Due: '+fshort(c.dueDate)};
+  }
+  if(!s.parity){
+    const d=ageDays(s.birth);
+    if(d==null) return {k:'GILT',label:'Gilt — no birth date',cls:'n'};
+    if(d<210) return {k:'GILT',label:'Gilt — '+Math.ceil((210-d))+'d to go',cls:'n',sub:'A.I. from '+fshort(addD(s.birth,210))};
+    return {k:'GILTOK',label:'Gilt — ready for A.I.',cls:'w',sub:ageTxt(s.birth)};
+  }
+  return {k:'OPEN',label:'Open — waiting for heat',cls:'n'};
+}
+
+/* ---------- breeding math ---------- */
+const AI_FROM=28, AI_TO=32;      // hrs from the moment heat is seen
+const GEST=114;                   // days
+const LACT=21;                    // days suckling
+function aiWindow(heatAt){
+  const t=new Date(heatAt).getTime();
+  return {from:new Date(t+AI_FROM*HR).toISOString(), to:new Date(t+AI_TO*HR).toISOString()};
+}
+function aiState(heatAt){
+  const w=aiWindow(heatAt), now=Date.now();
+  const a=new Date(w.from).getTime(), b=new Date(w.to).getTime();
+  if(now<a) return {s:'soon',ms:a-now,w};
+  if(now<=b) return {s:'open',ms:b-now,w};
+  return {s:'late',ms:now-b,w};
+}
+function hhmm(ms){
+  const h=Math.floor(ms/HR), m=Math.floor((ms%HR)/60000);
+  return h+'h '+String(m).padStart(2,'0')+'m';
+}
+
+/* ---------- task engine (no duplicates) ---------- */
+function addTask(t){
+  const k=[t.kind,t.ref||'',t.date].join('|');
+  if(db.tasks.some(x=>x.key===k)) return null;
+  db.tombs=db.tombs.filter(id=>id!==k);
+  const task=Object.assign({id:uid('t'),key:k,done:false,by:''},t);
+  db.tasks.push(task); return task;
+}
+function dropTasks(pred){
+  const go=db.tasks.filter(t=>pred(t)&&!t.done);
+  go.forEach(t=>db.tombs.push(t.id));
+  db.tasks=db.tasks.filter(t=>!(pred(t)&&!t.done));
+}
+function doneTask(id,on){
+  const t=db.tasks.find(x=>x.id===id); if(!t) return;
+  t.done=on; t.doneAt=on?new Date().toISOString():null; t.by=on?who():'';
+  save(); render();
+}
+
+/* ============================================================
+   ACCOUNTS AND ROLES
+   Each person signs in with their own PIN. What they can see and
+   do depends on their role. Records are stamped with their name.
+   ============================================================ */
+const ROLE={
+  admin:   {label:'Admin / owner', blurb:'Everything, plus accounts, money and the review page.',
+            tabs:['dash','sows','baktin','fat','health','kwarta','more'], groups:'*', can:'*'},
+  manager: {label:'Manager', blurb:'All farm operations, feeds, money and the review page.',
+            tabs:['dash','sows','baktin','fat','health','kwarta','more'], groups:'*',
+            can:['breed','sowedit','health','pigs','feeds','money','sales','review']},
+  aitech:  {label:'A.I. & health technician', blurb:'Heat, A.I., pregnancy checks, farrowing and sick pigs.',
+            tabs:['dash','sows','health','more'], groups:['sow','health'], can:['breed','health']},
+  caretaker:{label:'Caretaker / feeder', blurb:'Piglet program, fattening, feeds, and reporting sick pigs.',
+            tabs:['dash','baktin','fat','health','more'], groups:['baktin','health'], can:['pigs','feeds','health']},
+  sales:   {label:'Sales', blurb:'Records sales and sees what stock is ready.',
+            tabs:['dash','sales','more'], groups:[], can:['sales']}
+};
+let SESSION=null;
+const role=()=>SESSION?SESSION.role:'';
+const who=()=>SESSION?SESSION.name:(db.meta.encoder||'');
+function can(p){ const r=ROLE[role()]; if(!r) return false; return r.can==='*'||r.can.includes(p); }
+function inScope(t){ const g=ROLE[role()]; if(!g) return false; if(g.groups==='*') return true;
+  return g.groups.includes(t.group||'sow'); }
+function pinHash(pin,id){ let h=0; const str=String(pin)+'|'+id;
+  for(let i=0;i<str.length;i++){ h=(h*31+str.charCodeAt(i))>>>0; } return h.toString(36); }
+function userOf(id){ return db.users.find(u=>u.id===id); }
+function signIn(u){
+  SESSION={id:u.id,name:u.name,role:u.role};
+  db.meta.encoder=u.name; u.lastIn=new Date().toISOString();
+  db.logins.push({id:uid('li'),at:u.lastIn,user:u.name,role:u.role});
+  if(db.logins.length>300) db.logins=db.logins.slice(-300);
+  try{ localStorage.setItem('piggery_sess',u.id); }catch(e){}
+  VIEW='dash'; SUB=null; save(); render(); toast('Welcome, '+u.name.split(' ')[0]+'.');
+}
+function signOut(){
+  SESSION=null; try{ localStorage.removeItem('piggery_sess'); }catch(e){}
+  LOGIN_PICK=null; VIEW='dash'; render();
+}
+function restoreSession(){
+  let id=null; try{ id=localStorage.getItem('piggery_sess'); }catch(e){}
+  const u=id?userOf(id):null;
+  if(u&&u.active!==false){ SESSION={id:u.id,name:u.name,role:u.role}; db.meta.encoder=u.name; }
+}
+/* ============================================================
+   SOW WORKFLOW
+   HEAT -> A.I. -> check reheat (18-21 / 40 / 60) -> 114d farrowing
+   ============================================================ */
+
+/* 1) Seen in heat. Only one open cycle per sow. */
+function reportHeat(sowId, heatAt, note, silent){
+  const s=sowOf(sowId); if(!s) return;
+  if(openFarrow(sowId)){ toast('Still lactating: '+s.tag+'. Wean her first.'); return; }
+  const ex=openCycle(sowId);
+  if(ex){
+    if(ex.status==='HEAT'){
+      // already reported — just update the time, never duplicate
+      ex.heatAt=heatAt; ex.note=note||ex.note; refreshHeatTasks(ex);
+      save(); if(!silent) toast('Heat time updated for '+s.tag+' (no duplicate).'); render(); return;
+    }
+    toast('There is already an open record for '+s.tag+' ('+ex.status+'). Use REHEAT instead.'); return;
+  }
+  const c={id:uid('c'),sowId,heatAt,status:'HEAT',note:note||'',by:db.meta.encoder,
+           parityAt:s.parity||0, createdAt:new Date().toISOString(), ais:[], checks:[]};
+  db.cycles.push(c); refreshHeatTasks(c); save();
+  if(!silent) toast('Heat recorded for '+s.tag+'.');
+  render();
+}
+function refreshHeatTasks(c){
+  dropTasks(t=>t.ref===c.id&&t.kind==='AI');
+  const w=aiWindow(c.heatAt);
+  addTask({kind:'AI',ref:c.id,sowId:c.sowId,date:todayISO(w.from),
+    title:'A.I. for '+tagOf(c.sowId),
+    detail:'Breed at: '+ftime(w.from)+'–'+ftime(w.to)+' (28–32 hrs from '+ftime(c.heatAt)+')',group:'sow'});
+}
+
+/* 2) Na-A.I. */
+function recordAI(cycleId, aiAt, boarId, tech, note){
+  const c=cycleOf(cycleId); if(!c) return;
+  c.ais=c.ais||[];
+  if(c.ais.some(a=>a.at===aiAt)){ toast('This A.I. is already recorded.'); return; }
+  c.ais.push({at:aiAt,boarId,tech:tech||'',note:note||'',by:db.meta.encoder});
+  c.ais.sort((a,b)=>a.at.localeCompare(b.at));
+  const last=c.ais[c.ais.length-1];
+  c.aiFirst=c.ais[0].at;
+  c.aiAt=last.at;                       // checks and due date run from the last dose
+  c.boarId=last.boarId||c.ais[0].boarId;
+  c.status='BRED';
+  c.dueDate=addD(todayISO(c.aiAt), GEST);
+  const s=sowOf(c.sowId); if(s&&!s.parity) s.parity=s.parity||0;
+  dropTasks(t=>t.ref===c.id&&t.kind==='AI');
+  buildPregChecks(c);
+  save(); toast((c.ais.length>1?'Dose '+c.ais.length+' recorded. Counting from this one. ':'A.I. recorded. ')
+    +'Due: '+fdate(c.dueDate)); render();
+}
+function buildPregChecks(c){
+  dropTasks(t=>t.ref===c.id&&['RH1','RH2','RH3','FARROW','PREP'].includes(t.kind));
+  const d0=todayISO(c.aiAt), tag=tagOf(c.sowId);
+  addTask({kind:'RH1',ref:c.id,sowId:c.sowId,date:addD(d0,18),group:'sow',
+    title:'Watch for reheat: '+tag,detail:'First check: D18–D21 after A.I. ('+fshort(addD(d0,18))+'–'+fshort(addD(d0,21))+')'});
+  addTask({kind:'RH2',ref:c.id,sowId:c.sowId,date:addD(d0,40),group:'sow',
+    title:'2nd check for '+tag,detail:'D40 after A.I. — reheat, or truly pregnant?'});
+  addTask({kind:'RH3',ref:c.id,sowId:c.sowId,date:addD(d0,60),group:'sow',
+    title:'3rd check for '+tag,detail:'D60 — if there is no reheat, pregnancy is confirmed'});
+  addTask({kind:'PREP',ref:c.id,sowId:c.sowId,date:addD(d0,GEST-7),group:'sow',
+    title:'Prepare the farrowing pen for '+tag,detail:'One week to go. Clean it, warm it, wash the sow.'});
+  addTask({kind:'FARROW',ref:c.id,sowId:c.sowId,date:addD(d0,GEST),group:'sow',
+    title:'Farrowing: '+tag,detail:'114 days from A.I. ('+fdate(c.aiAt)+')'});
+}
+
+function recalcCycle(c){
+  c.ais=(c.ais||[]).sort((a,b)=>a.at.localeCompare(b.at));
+  if(!c.ais.length){                                   // no service left — back to being in heat
+    c.status='HEAT'; c.aiAt=null; c.aiFirst=null; c.dueDate=null; c.boarId=null;
+    dropTasks(t=>t.ref===c.id); refreshHeatTasks(c); return;
+  }
+  const last=c.ais[c.ais.length-1];
+  c.aiFirst=c.ais[0].at; c.aiAt=last.at; c.boarId=last.boarId||c.ais[0].boarId;
+  c.dueDate=addD(todayISO(c.aiAt), GEST);
+  if(c.status==='HEAT') c.status='BRED';
+  buildPregChecks(c);
+}
+function editDose(cycleId, i){
+  const c=cycleOf(cycleId), a=c.ais[i]; if(!a) return;
+  modal('Edit dose '+(i+1)+' — '+tagOf(c.sowId),'Correcting this moves every check and the due date with it.',[
+    {k:'at',label:'Date and time of this dose',type:'datetime-local',req:true,val:a.at},
+    boarPicker('boarId'),
+    {k:'tech',label:'Who did it',val:a.tech||''},
+    {k:'note',label:'Notes',val:a.note||''}
+  ],'Save',o=>{ a.at=o.at; a.boarId=o.boarId; a.tech=o.tech; a.note=o.note; a.editedBy=who();
+    recalcCycle(c); save(); toast('Dates moved. Due: '+fdate(c.dueDate)); render(); });
+  const e=$('f_boarId'); if(e) e.value=a.boarId||'';
+}
+function delDose(cycleId, i){
+  const c=cycleOf(cycleId); if(!c||!c.ais[i]) return;
+  confirmBox('Remove dose '+(i+1)+'? The checks will be worked out again from what is left.',()=>{
+    c.ais.splice(i,1); recalcCycle(c); save();
+    toast(c.ais.length?'Removed. Counting from '+fshort(c.aiAt)+'.':'All doses removed — she is back to being in heat.');
+    render(); });
+}
+function editHeat(cycleId){
+  const c=cycleOf(cycleId); if(!c) return;
+  modal('Edit the heat time — '+tagOf(c.sowId),'This is the time she was first seen in heat.',[
+    {k:'at',label:'Date and time seen in heat',type:'datetime-local',req:true,val:c.heatAt}
+  ],'Save',o=>{ c.heatAt=o.at; if(c.status==='HEAT') refreshHeatTasks(c);
+    save(); toast('Heat time corrected.'); render(); });
+}
+function delCycle(cycleId){
+  const c=cycleOf(cycleId); if(!c) return;
+  const f=db.farrowings.find(x=>x.cycleId===c.id);
+  if(f) return toast('There is a farrowing on this record. Delete the litter first.');
+  confirmBox('Delete this whole breeding record for '+tagOf(c.sowId)+'? The heat, the doses and the checks all go.',()=>{
+    dropTasks(t=>t.ref===c.id);
+    db.cycles=db.cycles.filter(x=>x.id!==c.id); db.tombs.push(c.id);
+    save(); toast('Record deleted.'); render(); });
+}
+function delSow(id){
+  const s=sowOf(id); if(!s) return;
+  const cyc=db.cycles.filter(c=>c.sowId===id), far=db.farrowings.filter(f=>f.sowId===id);
+  confirmBox('Delete '+s.tag+' completely? This also removes '+cyc.length+' breeding record(s) and '
+    +far.length+' litter(s). Use this only for a sow entered twice by mistake — use Cull for one you sold.',()=>{
+    const ids=[id].concat(cyc.map(c=>c.id), far.map(f=>f.id));
+    dropTasks(t=>t.sowId===id||ids.includes(t.ref));
+    db.cycles=db.cycles.filter(c=>c.sowId!==id);
+    db.farrowings=db.farrowings.filter(f=>f.sowId!==id);
+    db.nursery=db.nursery.filter(n=>!far.some(f=>f.id===n.farrowId));
+    db.health=db.health.filter(h=>h.ref!==id);
+    db.sows=db.sows.filter(x=>x.id!==id);
+    db.tombs=db.tombs.concat(ids);
+    save(); toast(s.tag+' deleted.'); go('sows'); });
+}
+
+/* 3) Reheat checks — one record per check. Auto-updates. */
+function recordCheck(cycleId, which, result, date, note){
+  const c=cycleOf(cycleId); if(!c) return;
+  c.checks=(c.checks||[]).filter(x=>x.which!==which);      // no duplicates: replace the old one
+  c.checks.push({which,result,date,note:note||'',by:db.meta.encoder,at:new Date().toISOString()});
+  const t=db.tasks.find(x=>x.ref===c.id&&x.kind===which);
+  if(t){ t.done=true; t.doneAt=new Date().toISOString(); t.by=db.meta.encoder; t.result=result; }
+  if(result==='reheat'){ markReheat(c, date+'T07:00'); return; }
+  if(which==='RH3'&&result==='clear') c.status='PREGNANT';
+  save(); toast('Check recorded. '+(c.status==='PREGNANT'?'Pregnancy confirmed.':'No reheat yet — keep watching.')); render();
+}
+
+/* 4) REHEAT — close the cycle, open a fresh one at once. No duplicates. */
+function markReheat(c, heatAt){
+  if(!OPEN.includes(c.status)){ toast('This record is already closed ('+c.status+'). Nothing was duplicated.'); render(); return; }
+  c.status='REHEAT'; c.closedAt=new Date().toISOString(); c.reheatAt=heatAt; c.closedBy=db.meta.encoder;
+  dropTasks(t=>t.ref===c.id);                     // drop every pending watch task from the old cycle
+  const s=sowOf(c.sowId);
+  const nc={id:uid('c'),sowId:c.sowId,heatAt,status:'HEAT',fromReheat:c.id,note:'Reheat after A.I. '+fdate(c.aiAt),
+            by:db.meta.encoder,parityAt:s?s.parity:0,createdAt:new Date().toISOString(),ais:[],checks:[]};
+  db.cycles.push(nc); refreshHeatTasks(nc); save();
+  const w=aiWindow(heatAt);
+  toast('Reheat recorded. New breeding window: '+fshort(w.from)+' '+ftime(w.from)+'–'+ftime(w.to));
+  render();
+}
+
+/* 5) Farrowing */
+function recordFarrow(cycleId, d){
+  const c=cycleOf(cycleId); if(!c) return;
+  if(db.farrowings.some(f=>f.cycleId===cycleId)){ toast('Farrowing is already recorded for this cycle.'); return; }
+  const s=sowOf(c.sowId);
+  const f={id:uid('f'),cycleId,sowId:c.sowId,date:d.date,
+    alive:num(d.alive),still:num(d.still),mumi:num(d.mumi),weak:num(d.weak),
+    crushed:0,weanPlan:addD(d.date,LACT),weanDate:null,weaned:null,note:d.note||'',by:db.meta.encoder,
+    boarId:c.boarId,gest:dDiff(todayISO(c.aiAt),d.date)};
+  db.farrowings.push(f);
+  c.status='FARROWED'; c.closedAt=new Date().toISOString(); c.farrowId=f.id;
+  dropTasks(t=>t.ref===c.id);
+  if(s){ s.parity=(s.parity||0)+1; s.lastFarrow=d.date; }
+  buildLitterTasks(f); save(); toast('Farrowed: '+(s?s.tag:'')+' — '+f.alive+' born alive. Weaning: '+fdate(f.weanPlan)); render();
+}
+function buildLitterTasks(f){
+  const tag=tagOf(f.sowId), r=f.id, d0=f.date;
+  const T=(kind,day,title,detail,group)=>addTask({kind,ref:r,sowId:f.sowId,date:addD(d0,day),title,detail,group:group||'baktin',day});
+  T('P3',3,'D3 piglets of '+tag,'Iron 1mL, antibiotic for wounds, teeth clip, ear notch, tail dock');
+  T('P7',7,'D7 piglets of '+tag,'Inject multivitamins. Start Foster Milk + Baby 7 + Scourex (until D15)');
+  T('P15',15,'D15 piglets of '+tag,'2nd Iron 1mL each. Continue Baby 7 until D21');
+  T('P21',21,'D21 — WEAN the litter of '+tag,'Vit ADE for the piglets (anti-stress) + Vit ADE 10mL for the sow. Move them to the nursery.');
+  T('SDW',24,'Deworm '+tag,'3 days after weaning/ADE','sow');
+  T('SHW',26,'Watch for heat: '+tag,'D5–D7 after weaning — the moment you see heat, log the TIME','sow');
+}
+
+/* 6) Wean */
+function recordWean(farrowId, date, weaned, crushed, note){
+  const f=db.farrowings.find(x=>x.id===farrowId); if(!f) return;
+  if(f.weanDate){ toast('This litter is already weaned.'); return; }
+  f.weanDate=date; f.weaned=num(weaned); f.crushed=num(crushed); f.weanNote=note||'';
+  db.tasks.filter(t=>t.ref===f.id&&['P21'].includes(t.kind)).forEach(t=>{t.done=true;t.doneAt=new Date().toISOString();});
+  // re-anchor the sow tasks to the actual weaning date
+  dropTasks(t=>t.ref===f.id&&['SDW','SHW'].includes(t.kind));
+  const tag=tagOf(f.sowId);
+  addTask({kind:'SDW',ref:f.id,sowId:f.sowId,date:addD(date,3),group:'sow',title:'Deworm '+tag,detail:'3 days after Vit ADE'});
+  addTask({kind:'SHW',ref:f.id,sowId:f.sowId,date:addD(date,5),group:'sow',title:'Watch for heat: '+tag,detail:'D5–D7 after weaning ('+fshort(addD(date,5))+'–'+fshort(addD(date,7))+'). Log the exact time you saw it.'});
+  const b={id:uid('n'),farrowId:f.id,sowTag:tag,inDate:date,heads:num(weaned),out:0,dead:0,
+    note:'', by:db.meta.encoder, status:'open'};
+  db.nursery.push(b);
+  addTask({kind:'NUR',ref:b.id,date:addD(date,7),group:'baktin',title:'Nursery '+tag+': 7 days of Scourex done',
+    detail:'Continue Baby 7 + Foster Milk. Check for scours and weight.'});
+  save(); toast(weaned+' piglets weaned. They are in the nursery now.'); render();
+}
+/* ============================================================
+   UI FRAMEWORK
+   ============================================================ */
+const ICON={
+  dash:'<path d="M3 12l9-8 9 8"/><path d="M5 10v10h14V10"/>',
+  sow:'<path d="M4 13a6 6 0 0 1 12 0v5H4z"/><circle cx="12" cy="14" r="1.2"/><path d="M4 9l1.5-3L8 8M16 9l1.5-3L20 8"/><path d="M20 13v5"/>',
+  baktin:'<circle cx="8" cy="10" r="3.5"/><circle cx="16" cy="14" r="3.5"/><path d="M8 14v5M16 18v2"/>',
+  fat:'<path d="M3 16l4-6 4 3 4-7 6 10z"/><path d="M3 20h18"/>',
+  money:'<rect x="3" y="6" width="18" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/>',
+  health:'<path d="M12 5v14M5 12h14"/><circle cx="12" cy="12" r="9"/>',
+  more:'<circle cx="5" cy="12" r="1.4"/><circle cx="12" cy="12" r="1.4"/><circle cx="19" cy="12" r="1.4"/>'
+};
+const TABMETA={dash:['Today','dash'],sows:['Sows','sow'],baktin:['Piglets','baktin'],
+  fat:['Fatten','fat'],health:['Health','health'],kwarta:['Money','money'],
+  sales:['Sales','money'],more:['More','more']};
+function myTabs(){ const r=ROLE[role()]; return r?r.tabs:[]; }
+function drawTabs(){
+  const tabs=myTabs();
+  document.body.style.setProperty('--tabn',tabs.length||1);
+  $('tabs').innerHTML=tabs.map(k=>{const [l,i]=TABMETA[k];
+    return `<button class="${VIEW===k?'on':''}" onclick="go('${k}')"><svg viewBox="0 0 24 24">${ICON[i]}</svg>${l}</button>`;}).join('');
+}
+function go(v,sub){ VIEW=v; SUB=sub||null; Q=''; window.scrollTo(0,0); render(); }
+function toast(msg){
+  const old=document.querySelector('.toast'); if(old) old.remove();
+  const d=document.createElement('div'); d.className='toast'; d.textContent=msg;
+  document.body.appendChild(d); setTimeout(()=>d.remove(),3400);
+}
+
+/* ---- form builder ---- */
+let MODAL=null;
+function field(f){
+  const v=f.val==null?'':f.val;
+  let inp;
+  if(f.type==='select') inp=`<select id="f_${f.k}">${f.opts.map(o=>{const [ov,ol]=Array.isArray(o)?o:[o,o];
+      return `<option value="${esc(ov)}" ${String(ov)===String(v)?'selected':''}>${esc(ol)}</option>`;}).join('')}</select>`;
+  else if(f.type==='textarea') inp=`<textarea id="f_${f.k}" placeholder="${esc(f.ph||'')}">${esc(v)}</textarea>`;
+  else inp=`<input id="f_${f.k}" type="${f.type||'text'}" value="${esc(v)}" placeholder="${esc(f.ph||'')}"
+      ${f.type==='number'?'inputmode="decimal" step="any"':''} ${f.min!=null?'min="'+f.min+'"':''}>`;
+  return `<div class="field"><label for="f_${f.k}">${esc(f.label)}</label>${inp}${f.hint?`<div class="hint">${f.hint}</div>`:''}</div>`;
+}
+function modal(title, sub, fields, okLabel, onOk, extraHTML){
+  MODAL={fields,onOk};
+  $('modalHost').innerHTML=`<div class="modal-bg" onclick="if(event.target===this)closeModal()"><div class="modal" role="dialog">
+    <h2>${esc(title)}</h2><div class="sub">${sub||''}</div>
+    ${extraHTML||''}
+    ${fields.map(field).join('')}
+    <div class="acts"><button class="btn ghost" onclick="closeModal()">Cancel</button>
+    <button class="btn" onclick="submitModal()">${esc(okLabel||'Save')}</button></div></div></div>`;
+  const first=$('f_'+fields[0].k); if(first&&window.innerWidth>880) first.focus();
+}
+function closeModal(){ MODAL=null; $('modalHost').innerHTML=''; }
+function submitModal(){
+  if(!MODAL) return;
+  const o={};
+  for(const f of MODAL.fields){
+    const e=$('f_'+f.k); let v=e?e.value:'';
+    if(f.type==='number') v=v===''?'':num(v);
+    if(f.req&&(v===''||v==null)){ toast('Kulang: '+f.label); e&&e.focus(); return; }
+    o[f.k]=v;
+  }
+  const fn=MODAL.onOk; closeModal(); fn(o);
+}
+function confirmBox(msg, onYes){
+  $('modalHost').innerHTML=`<div class="modal-bg" onclick="if(event.target===this)closeModal()"><div class="modal">
+    <h2>Are you sure?</h2><div class="sub">${esc(msg)}</div>
+    <div class="acts"><button class="btn ghost" onclick="closeModal()">No</button>
+    <button class="btn danger" id="yesBtn">Yes, go ahead</button></div></div></div>`;
+  $('yesBtn').onclick=()=>{ closeModal(); onYes(); };
+}
+function setEncoder(){
+  modal('Who is entering records?','This gets stamped on everything you record.',
+    [{k:'n',label:'Name',val:db.meta.encoder,req:true,ph:'e.g. Nonoy / Tatay / Boss'},
+     {k:'farm',label:'Piggery name',val:db.meta.farm}],
+    'Save',o=>{ db.meta.encoder=o.n; db.meta.farm=o.farm||db.meta.farm; save(); render(); toast('Welcome, '+o.n+'!'); });
+}
+
+/* ---- shared bits ---- */
+function tagChip(s,sm){ return `<span class="tag ${sm?'sm':''}">${esc(s)}</span>`; }
+function emptyBox(title,msg,btn,fn){
+  return `<div class="card"><div class="empty"><b>${esc(title)}</b>${esc(msg)}
+  ${btn?`<div style="margin-top:12px"><button class="btn" onclick="${fn}">${esc(btn)}</button></div>`:''}</div></div>`;
+}
+function sowPicker(k,label,filter){
+  const list=db.sows.filter(s=>s.status!=='CULL').filter(filter||(()=>true))
+    .sort((a,b)=>a.tag.localeCompare(b.tag,undefined,{numeric:true}));
+  return {k,label,type:'select',req:true,opts:[['','— choose the sow —']].concat(list.map(s=>[s.id,s.tag+' · '+sowState(s).label]))};
+}
+function boarPicker(k){
+  return {k,label:'Boar used',type:'select',
+    opts:[['','— not specified —']].concat(db.boars.map(b=>[b.id,b.tag+(b.breed?' ('+b.breed+')':'')]))};
+}
+function render(){
+  syncChip();
+  const bn=$('brand'); if(bn){ const f=(db.meta.farm||'').trim();
+    bn.textContent = f.length>22 ? f.split(/\s+/).slice(0,3).join(' ') : (f||'Piggery Record'); }
+  const t=new Date();
+  $('todayLbl').innerHTML=MON[t.getMonth()]+' '+t.getDate()+', '+t.getFullYear()+'<br>'+ftime(t.toISOString());
+  if(!SESSION){
+    document.body.classList.add('out');
+    $('tabs').innerHTML='';
+    $('encoderBtn').textContent='Not signed in';
+    $('view').innerHTML = db.users.filter(u=>u.active!==false).length? vLogin() : vSetup();
+    return;
+  }
+  document.body.classList.remove('out');
+  drawTabs();
+  $('encoderBtn').textContent=SESSION.name+' · '+ROLE[role()].label.split(' ')[0];
+  const V={dash:vDash,sows:vSows,sow:vSow,baktin:vBaktin,fat:vFat,kwarta:vKwarta,more:vMore,
+           guide:vGuide,feeds:vFeeds,gastos:vGastos,sweldo:vSweldo,boars:vBoars,health:vHealth,
+           batch:vBatch,litter:vLitter,tasks:vTasks,data:vData,sales:vSales,users:vUsers,
+           review:vReview,case:vCase,cloud:vCloud};
+  const allowed=myTabs().concat(['sow','litter','batch','case','tasks','guide','feeds','gastos',
+    'sweldo','boars','data','users','review','sales','health','kwarta','fat','baktin','sows','cloud']);
+  const NEED={kwarta:'money',gastos:'money',sweldo:'money',sales:'sales',health:'health',case:'health',
+    review:'review',feeds:'feeds',fat:'pigs',baktin:'pigs',litter:'pigs',batch:'pigs',
+    sows:'breed',sow:'breed',boars:'breed'};
+  let v=VIEW;
+  if(!allowed.includes(v)) v='dash';
+  if(NEED[v]&&!can(NEED[v])) v='dash';
+  if((v==='users'||v==='data')&&role()!=='admin') v='dash';
+  $('view').innerHTML=(V[v]||vDash)();
+  tickClocks();
+}
+/* ============================================================
+   VIEW: TODAY (dashboard)
+   ============================================================ */
+function pendingTasks(){
+  return db.tasks.filter(t=>!t.done&&inScope(t)).sort((a,b)=>a.date.localeCompare(b.date));
+}
+function taskLine(t){
+  const n=fromToday(t.date);
+  const cls=t.done?'done':(n<0?'late':(n===0?'due':''));
+  const s=t.sowId?sowOf(t.sowId):null;
+  return `<div class="task ${cls}">
+    <div class="when">${whenTxt(t.date)}<br><span style="font-weight:500;color:#8B9A89">${fshort(t.date)}</span></div>
+    <div class="body"><div class="t">${esc(t.title)}</div><div class="d">${esc(t.detail||'')}</div>
+      ${s?`<div style="margin-top:5px"><button class="link" onclick="go('sow','${s.id}')">Open ${esc(s.tag)}</button></div>`:''}
+    </div>
+    <button class="btn ${t.done?'ghost':''} sm" onclick="doneTask('${t.id}',${!t.done})">${t.done?'Undo':'Done'}</button>
+  </div>`;
+}
+function tickClocks(){
+  document.querySelectorAll('[data-heat]').forEach(el=>{
+    const st=aiState(el.dataset.heat);
+    el.textContent = st.s==='soon'? hhmm(st.ms)+' to go'
+                   : st.s==='open'? hhmm(st.ms)+' na lang'
+                   : 'Overdue by '+hhmm(st.ms);
+  });
+}
+setInterval(tickClocks, 30000);
+
+function vDash(){
+  let h='';
+  h+=`<div class="card tight"><div class="spread"><div><b>${esc(SESSION.name)}</b>
+    <div class="small muted">${ROLE[role()].label} · ${ROLE[role()].blurb}</div></div>
+    <button class="btn ghost sm" onclick="accountMenu()">Account</button></div></div>`;
+
+  if(!db.sows.length&&can('sowedit')) h+=`<div class="card"><b>Let's get started.</b>
+    <div class="small muted" style="margin:4px 0 10px">Enter your sows first — eartag, where she came from, birth date, and how many litters she has had.
+    After that, every heat, A.I., farrowing and weaning schedules the work for you.</div>
+    <button class="btn wide" onclick="askSow()">Add the first sow</button></div>`;
+
+  // --- A.I. windows (the most important thing) ---
+  const heats=can('breed')?db.cycles.filter(c=>c.status==='HEAT').sort((a,b)=>a.heatAt.localeCompare(b.heatAt)):[];
+  heats.forEach(c=>{
+    const st=aiState(c.heatAt), s=sowOf(c.sowId); if(!s) return;
+    if(st.s==='late'&&st.ms>3*DAY) return;
+    const w=st.w;
+    h+=`<div class="aiwin ${st.s==='open'?'open':''}">
+      <div class="lbl">${st.s==='open'?'CERVIX IS OPEN — breed her now':st.s==='soon'?'Waiting for the breeding window':'The window has passed'}</div>
+      <div class="clock" data-heat="${c.heatAt}">—</div>
+      <div class="win">${esc(s.tag)} · in heat ${fshort(c.heatAt)} ${ftime(c.heatAt)}<br>
+        Breed at: <b>${fshort(w.from)} ${ftime(w.from)} – ${ftime(w.to)}</b> (28–32 hrs)</div>
+      <div class="row wrap">
+        <button class="btn tag sm" onclick="askAI('${c.id}')">Record the A.I.</button>
+        <button class="btn ghost sm" onclick="askHeat('${c.sowId}')">Edit the time</button>
+        <button class="btn ghost sm" onclick="go('sow','${c.sowId}')">Details</button>
+      </div></div>`;
+  });
+
+  // --- today's work ---
+  const pend=pendingTasks(), today=pend.filter(t=>fromToday(t.date)<=0);
+  h+=`<div class="sect-head"><h2>Today's work</h2><span class="count">${today.length} items</span></div>`;
+  h+=`<div class="card">`;
+  h+= today.length? today.slice(0,12).map(taskLine).join('')
+    : `<div class="empty"><b>Nothing pending today.</b>Everything is up to date. Check the coming days below.</div>`;
+  h+=`</div>`;
+
+  // --- quick actions ---
+  h+=quickActions();
+
+  if(role()==='sales'){
+    const ready=db.fatten.filter(b=>b.status==='open').reduce((a,b)=>a+batchOn(b),0);
+    const wean=db.nursery.filter(b=>b.status==='open').reduce((a,b)=>a+(b.heads-b.out-b.dead),0);
+    const m=todayISO().slice(0,7);
+    const mine=db.sales.filter(x=>x.date.startsWith(m)).reduce((a,x)=>a+num(x.amount),0);
+    h+=`<div class="grid3" style="margin-bottom:9px">
+      <div class="stat"><b class="num">${ready}</b><span>Fatteners on hand</span></div>
+      <div class="stat"><b class="num">${wean}</b><span>Weanlings</span></div>
+      <div class="stat"><b class="money" style="font-size:17px">${peso(mine)}</b><span>Sold this month</span></div></div>
+      <div class="card"><button class="btn wide" onclick="go('sales')">Open sales</button></div>`;
+    return h;
+  }
+  // --- numbers ---
+  const live=db.sows.filter(s=>s.status!=='CULL');
+  const preg=live.filter(s=>['BRED','PREG'].includes(sowState(s).k)).length;
+  const lact=live.filter(s=>sowState(s).k==='LACT').length;
+  const nurs=db.nursery.filter(b=>b.status==='open').reduce((a,b)=>a+(b.heads-b.out-b.dead),0);
+  const fatn=db.fatten.filter(b=>b.status==='open').reduce((a,b)=>a+(b.heads-(b.sold||0)-(b.dead||0)),0);
+  const suckl=db.farrowings.filter(f=>!f.weanDate).reduce((a,f)=>a+f.alive-(f.crushed||0),0);
+  h+=`<div class="grid3" style="margin-bottom:9px">
+    <div class="stat"><b class="num">${live.length}</b><span>Sows/gilts</span></div>
+    <div class="stat"><b class="num">${preg}</b><span>Bred/pregnant</span></div>
+    <div class="stat"><b class="num">${lact}</b><span>Lactating</span></div>
+    <div class="stat"><b class="num">${suckl}</b><span>Suckling piglets</span></div>
+    <div class="stat"><b class="num">${nurs}</b><span>Nursery</span></div>
+    <div class="stat"><b class="num">${fatn}</b><span>Fatteners</span></div></div>`;
+
+  // --- farrowing soon ---
+  const due=db.cycles.filter(c=>['BRED','PREGNANT'].includes(c.status)&&c.dueDate)
+    .sort((a,b)=>a.dueDate.localeCompare(b.dueDate)).slice(0,5);
+  if(due.length){
+    h+=`<div class="sect-head"><h2>Farrowing soon</h2></div><div class="card tight">`;
+    h+=due.map(c=>{const s=sowOf(c.sowId);const n=fromToday(c.dueDate);
+      return `<button class="listitem" style="border:0;margin:0;padding:9px 0;border-bottom:1px solid var(--line-soft);border-radius:0" onclick="go('sow','${c.sowId}')">
+        ${tagChip(s?s.tag:'?')}<div class="meta"><div class="l1">${fdate(c.dueDate)}</div>
+        <div class="l2">${n<0?Math.abs(n)+' days overdue':n+' days to go'} · D${dDiff(c.aiAt,todayISO())} of gestation</div></div>
+        <span class="pill ${n<=7?'w':'n'}">${c.status==='PREGNANT'?'Pregnant':'Watching'}</span></button>`;}).join('');
+    h+=`</div>`;
+  }
+
+  // --- coming days ---
+  const soon=pend.filter(t=>fromToday(t.date)>0).slice(0,8);
+  if(soon.length){
+    h+=`<div class="sect-head"><h2>Coming days</h2>
+      <span class="count"><button class="link" onclick="go('tasks')">All (${pend.length})</button></span></div>
+      <div class="card">${soon.map(taskLine).join('')}</div>`;
+  }
+
+  // --- money this month ---
+  const m=todayISO().slice(0,7);
+  const gas=db.expenses.filter(e=>e.date.startsWith(m)).reduce((a,e)=>a+num(e.amount),0)
+          + db.feeds.filter(e=>e.date.startsWith(m)).reduce((a,e)=>a+num(e.total),0)
+          + db.payroll.filter(p=>p.date.startsWith(m)).reduce((a,p)=>a+num(p.net),0);
+  const kita=db.sales.filter(s=>s.date.startsWith(m)).reduce((a,s)=>a+num(s.amount),0);
+  if(can('money')) h+=`<div class="sect-head"><h2>This month</h2></div>
+    <div class="card"><div class="spread"><div><div class="small muted">Total expenses</div>
+    <div class="money" style="font-size:20px">${peso(gas)}</div></div>
+    <div style="text-align:right"><div class="small muted">Sales</div>
+    <div class="money" style="font-size:20px;color:${kita-gas>=0?'var(--good)':'var(--alert)'}">${peso(kita)}</div></div></div>
+    <hr class="sep"><div class="spread small"><span class="muted">Balance</span>
+    <b class="money" style="color:${kita-gas>=0?'var(--good)':'var(--alert)'}">${peso(kita-gas)}</b></div>
+    <div style="margin-top:10px"><button class="btn ghost sm wide" onclick="go('kwarta')">Open the money page</button></div></div>`;
+  return h;
+}
+
+function vTasks(){
+  const all=db.tasks.slice().sort((a,b)=>a.date.localeCompare(b.date));
+  const pend=all.filter(t=>!t.done), done=all.filter(t=>t.done).slice(-25).reverse();
+  let h=`<button class="backlink" onclick="go('dash')">‹ Today</button><h1>All tasks</h1>
+   <div class="small muted" style="margin-bottom:10px">Built automatically from your A.I., farrowing and weaning dates.</div>`;
+  h+=`<div class="card">${pend.length?pend.map(taskLine).join(''):'<div class="empty"><b>Nothing pending.</b>The list is clear.</div>'}</div>`;
+  if(done.length) h+=`<div class="sect-head"><h2>Completed</h2></div><div class="card">${done.map(taskLine).join('')}</div>`;
+  return h;
+}
+/* ============================================================
+   VIEW: SOW
+   ============================================================ */
+const SOWFILTERS=[['tanan','All'],['heat','In heat'],['bred','Bred'],['preg','Pregnant'],
+                  ['lact','Lactating'],['open','Open'],['gilt','Gilts']];
+function matchFilter(s){
+  const k=sowState(s).k;
+  if(FILTER==='tanan') return s.status!=='CULL';
+  if(FILTER==='heat') return k==='HEAT';
+  if(FILTER==='bred') return k==='BRED';
+  if(FILTER==='preg') return k==='PREG';
+  if(FILTER==='lact') return k==='LACT';
+  if(FILTER==='open') return k==='OPEN';
+  if(FILTER==='gilt') return k==='GILT'||k==='GILTOK';
+  return true;
+}
+function setFilter(f){ FILTER=f; render(); }
+function setQ(v){ Q=v; const box=$('view'); const pos=document.activeElement===$('qbox')?$('qbox').selectionStart:null;
+  render(); const b=$('qbox'); if(b){ b.focus(); if(pos!=null) b.setSelectionRange(pos,pos); } }
+
+function vSows(){
+  let list=db.sows.filter(matchFilter);
+  if(Q) list=list.filter(s=>(s.tag+' '+(s.origin||'')+' '+(s.breed||'')).toLowerCase().includes(Q.toLowerCase()));
+  list.sort((a,b)=>a.tag.localeCompare(b.tag,undefined,{numeric:true}));
+  let h=`<div class="spread" style="margin-bottom:10px"><h1>Sows and gilts</h1>
+    ${can('sowedit')?'<button class="btn sm" onclick="askSow()">+ New</button>':''}</div>
+    <div class="searchbar"><input id="qbox" placeholder="Search eartag…" value="${esc(Q)}" oninput="setQ(this.value)"></div>
+    <div class="chipbar">${SOWFILTERS.map(([k,l])=>`<button class="${FILTER===k?'on':''}" onclick="setFilter('${k}')">${l}</button>`).join('')}</div>`;
+  if(!db.sows.length) return h+emptyBox('No sows on the list yet','Start by entering your 40 sows — eartag, where she came from, and her age.','Add the first sow','askSow()');
+  if(!list.length) return h+emptyBox('Nothing found','Change the filter or the search.','','');
+  h+=list.map(s=>{const st=sowState(s);
+    return `<button class="listitem" onclick="go('sow','${s.id}')">${tagChip(s.tag)}
+      <div class="meta"><div class="l1">${st.label}</div>
+      <div class="l2">${esc(s.origin||'—')} · ${ageTxt(s.birth)} · ${s.parity||0} litters${st.sub?' · '+esc(st.sub):''}</div></div>
+      <span class="pill ${st.cls}">P${s.parity||0}</span><span class="chev">›</span></button>`;}).join('');
+  return h;
+}
+
+function vSow(){
+  const s=sowOf(SUB); if(!s) return vSows();
+  const st=sowState(s), c=openCycle(s.id), f=openFarrow(s.id);
+  let h=`<button class="backlink" onclick="go('sows')">‹ Sows</button>
+  <div class="card"><div class="spread"><div class="row wrap">${tagChip(s.tag)}
+    <span class="pill ${st.cls}">${st.label}</span></div>
+    ${can('sowedit')?`<button class="btn ghost sm" onclick="askSow('${s.id}')">Edit</button>`:''}</div>
+    <hr class="sep">
+    <div class="grid2 small">
+      <div><span class="muted">From:</span> ${esc(s.origin||'—')}</div>
+      <div><span class="muted">Breed:</span> ${esc(s.breed||'—')}</div>
+      <div><span class="muted">Born:</span> ${fdate(s.birth)}</div>
+      <div><span class="muted">Age:</span> ${ageTxt(s.birth)}</div>
+      <div><span class="muted">Parity:</span> ${s.parity||0} farrowings</div>
+      <div><span class="muted">Last litter:</span> ${s.lastFarrow?fshort(s.lastFarrow):'—'}</div>
+      ${s.damTag?`<div><span class="muted">Dam:</span> ${esc(s.damTag)}</div>`:''}
+      ${s.sireTag?`<div><span class="muted">Sire:</span> ${esc(s.sireTag)}</div>`:''}
+    </div>${s.note?`<hr class="sep"><div class="small">${esc(s.note)}</div>`:''}</div>`;
+
+  /* --- current state --- */
+  if(f){
+    const d=dDiff(f.date,todayISO());
+    h+=`<div class="sect-head"><h2>Lactating — D${d}</h2></div><div class="card">
+      <div class="grid3 small" style="margin-bottom:8px">
+        <div class="stat"><b class="num">${f.alive}</b><span>Born alive</span></div>
+        <div class="stat"><b class="num">${f.alive-(f.crushed||0)}</b><span>Alive now</span></div>
+        <div class="stat"><b class="num">${Math.max(0,dDiff(todayISO(),f.weanPlan))}</b><span>Days to weaning</span></div></div>
+      ${litterTimeline(f)}
+      <div class="row wrap" style="margin-top:8px">
+        <button class="btn sm" onclick="askWean('${f.id}')">Wean (D21)</button>
+        <button class="btn ghost sm" onclick="askCrush('${f.id}')">+ Crushed/died</button>
+        <button class="btn ghost sm" onclick="go('litter','${f.id}')">Litter details</button></div></div>`;
+  }
+  if(c&&c.status==='HEAT'){
+    const w=aiWindow(c.heatAt), stt=aiState(c.heatAt);
+    h+=`<div class="sect-head"><h2>In heat</h2></div>
+      <div class="aiwin ${stt.s==='open'?'open':''}">
+        <div class="lbl">Seen: ${fdate(c.heatAt)} ${ftime(c.heatAt)}</div>
+        <div class="clock" data-heat="${c.heatAt}">—</div>
+        <div class="win">Breed at: <b>${fshort(w.from)} ${ftime(w.from)} – ${ftime(w.to)}</b></div>
+        <div class="row wrap"><button class="btn tag sm" onclick="askAI('${c.id}')">Record the A.I.</button>
+        <button class="btn ghost sm" onclick="askHeat('${s.id}')">Edit the time</button></div></div>`;
+  }
+  if(c&&(c.status==='BRED'||c.status==='PREGNANT')){
+    h+=`<div class="sect-head"><h2>Pregnancy monitoring</h2>
+      <span class="count">D${dDiff(c.aiAt,todayISO())} / 114</span></div>
+      <div class="card">${pregTimeline(c)}
+      <div class="bar"><i style="width:${Math.min(100,Math.round(dDiff(c.aiAt,todayISO())/GEST*100))}%"></i></div>
+      ${doseList(c)}
+      <div class="row wrap" style="margin-top:10px">
+        <button class="btn sm danger" onclick="askReheat('${c.id}')">She REHEATED</button>
+        <button class="btn ghost sm" onclick="askCheck('${c.id}')">Record a check</button>
+        <button class="btn sm" onclick="askFarrow('${s.id}')">She farrowed</button>
+        <button class="btn danger sm" onclick="delCycle('${c.id}')">Delete this record</button></div></div>`;
+  }
+  if(!c&&!f){
+    const ok=st.k!=='GILT';
+    h+=`<div class="card"><div class="spread"><div><b>${ok?'Waiting for heat':'Still too young'}</b>
+      <div class="small muted">${ok?'The moment you see her in heat, log the time — the 28–32 hours are counted from there.':(st.sub||'7 months is the minimum age before A.I.')}</div></div></div>
+      <div style="margin-top:10px"><button class="btn wide" onclick="askHeat('${s.id}')">Seen in heat</button></div></div>`;
+  }
+
+  /* --- history --- */
+  const cy=sowCycles(s.id);
+  if(cy.length){
+    h+=`<div class="sect-head"><h2>History</h2><span class="count">${cy.length} cycles</span></div><div class="card tight">`;
+    h+=cy.map(c2=>{
+      const far=db.farrowings.find(x=>x.cycleId===c2.id);
+      const badge=c2.status==='REHEAT'?'<span class="pill r">Reheat</span>'
+        :c2.status==='FARROWED'?'<span class="pill g">Farrowed</span>'
+        :'<span class="pill w">'+c2.status+'</span>';
+      return `<div style="padding:9px 0;border-bottom:1px solid var(--line-soft)">
+        <div class="spread"><b class="small">${fdate(c2.heatAt)}</b>${badge}</div>
+        <div class="tiny muted">Heat ${ftime(c2.heatAt)}${c2.aiAt?' · A.I. '+fshort(c2.aiAt)+' '+ftime(c2.aiAt):' · no A.I.'}
+        ${c2.boarId&&boarOf(c2.boarId)?' · boar '+esc(boarOf(c2.boarId).tag):''}
+        ${far?' · '+far.alive+' live, '+far.still+' stillborn, '+far.mumi+' mummified'+(far.weaned!=null?', '+far.weaned+' weaned':''):''}</div>
+        ${far?`<button class="link tiny" onclick="go('litter','${far.id}')">View the litter</button>`:''}</div>`;
+    }).join('');
+    h+=`</div>`;
+  }
+  if(can('sowedit')) h+=`<div class="card"><button class="btn danger sm wide" style="margin-bottom:8px" onclick="askCull('${s.id}')">
+    ${s.status==='CULL'?'Return to active':'Cull / mark as sold'}</button>
+    <button class="btn danger sm wide" onclick="delSow('${s.id}')">Delete this sow and all her records</button>
+    <div class="tiny muted" style="margin-top:6px">Cull keeps her history. Delete is for a sow entered twice by mistake.</div></div>`;
+  return h;
+}
+
+const ORD=['1st','2nd','3rd','4th','5th'];
+function doseList(c){
+  const a=c.ais||[];
+  return `<hr class="sep"><div class="spread"><b class="small">Services</b>
+    <span class="tiny muted">${a.length} dose${a.length>1?'s':''}</span></div>
+  ${a.map((x,i)=>`<div class="spread small" style="padding:6px 0;border-bottom:1px solid var(--line-soft)">
+    <div><b>${ORD[i]||(i+1)+'th'} dose</b> · ${fshort(x.at)} ${ftime(x.at)}
+      ${i===a.length-1&&a.length>1?'<span class="pill g">counting from here</span>':''}
+      <div class="tiny muted">${x.boarId&&boarOf(x.boarId)?'boar '+esc(boarOf(x.boarId).tag):'no boar noted'}${x.tech?' · '+esc(x.tech):''}</div></div>
+    <div class="row"><button class="link" onclick="editDose('${c.id}',${i})">edit</button>
+      <button class="link" onclick="delDose('${c.id}',${i})">remove</button></div></div>`).join('')}
+  <div class="tiny muted" style="margin-top:6px">Heat seen ${fshort(c.heatAt)} ${ftime(c.heatAt)} ·
+    the D18–21, D40, D60 checks and the 114 days all run from the last dose.</div>
+  <div class="row wrap" style="margin-top:8px">
+    <button class="btn ghost sm" onclick="askAI('${c.id}')">+ Another dose</button>
+    <button class="btn ghost sm" onclick="editHeat('${c.id}')">Edit heat time</button></div>`;
+}
+function pregTimeline(c){
+  const d0=todayISO(c.aiAt), n=dDiff(d0,todayISO());
+  const nd=(c.ais||[]).length;
+  const pts=[[0, nd>1?'A.I. — '+(ORD[nd-1]||nd+'th')+' dose':'A.I.',
+    fdate(c.aiAt)+' '+ftime(c.aiAt)+(nd>1?' · 1st dose was '+fshort(c.aiFirst)+' '+ftime(c.aiFirst):'')],
+    [18,'Reheat check D18–21',fshort(addD(d0,18))+'–'+fshort(addD(d0,21))],
+    [40,'Check D40',fshort(addD(d0,40))],
+    [60,'D60 — confirm',fshort(addD(d0,60))],
+    [107,'Prepare the pen',fshort(addD(d0,107))],
+    [114,'Farrowing',fdate(addD(d0,114))]];
+  return `<div class="tl">`+pts.map(([d,t,s])=>{
+    const ck=(c.checks||[]).find(x=>(x.which==='RH1'&&d===18)||(x.which==='RH2'&&d===40)||(x.which==='RH3'&&d===60));
+    const passed=n>=d, cur=!passed&&n>=d-3;
+    return `<div class="n ${ck?'ok':passed?'ok':cur?'now':''}"><div class="t">${t}</div>
+      <div class="s">${s}${ck?' · <b style="color:var(--good)">checked: no reheat</b>':passed&&d>0&&d<=60?' · not checked yet':''}</div></div>`;
+  }).join('')+`</div>`;
+}
+function litterTimeline(f){
+  const ts=db.tasks.filter(t=>t.ref===f.id&&t.kind.startsWith('P')).sort((a,b)=>a.date.localeCompare(b.date));
+  if(!ts.length) return '';
+  return `<div class="tl">`+ts.map(t=>{
+    const n=fromToday(t.date);
+    return `<div class="n ${t.done?'ok':n===0?'now':''}"><div class="t">${esc(t.title.split(' of ')[0])} · ${fshort(t.date)}</div>
+      <div class="s">${esc(t.detail)}${t.done?' · <b style="color:var(--good)">done</b>':n<0?' · <b style="color:var(--alert)">overdue</b>':''}</div></div>`;
+  }).join('')+`</div>`;
+}
+
+/* ---------- sow modals ---------- */
+function askSow(id){
+  const s=id?sowOf(id):null;
+  modal(s?'Edit '+s.tag:'New sow or gilt', s?'':'Enter her eartag, where she came from, and her birth date.',[
+    {k:'tag',label:'Eartag #',req:true,val:s?s.tag:'',ph:'pananglit: S-041'},
+    {k:'origin',label:'Where she came from',val:s?s.origin:'',ph:'e.g. bought in Sagay / daughter of S-012'},
+    {k:'breed',label:'Breed',val:s?s.breed:'',ph:'Landrace, Large White, F1…'},
+    {k:'birth',label:'Birth date',type:'date',val:s?s.birth:'',hint:'The 7-month gilt rule is counted from this date.'},
+    {k:'parity',label:'Number of farrowings (parity)',type:'number',val:s?(s.parity||0):0,min:0,hint:'0 if she is still a gilt.'},
+    {k:'damTag',label:'Dam eartag',val:s?s.damTag:''},
+    {k:'sireTag',label:'Sire (boar)',val:s?s.sireTag:''},
+    {k:'note',label:'Notes',type:'textarea',val:s?s.note:''}
+  ],'Save',o=>{
+    if(!s&&db.sows.some(x=>x.tag.toLowerCase()===o.tag.toLowerCase())){ toast('Eartag already in use: '+o.tag+'.'); return; }
+    if(s){ Object.assign(s,o); s.parity=num(o.parity); }
+    else db.sows.push({id:uid('s'),tag:o.tag,origin:o.origin,breed:o.breed,birth:o.birth,
+      parity:num(o.parity),damTag:o.damTag,sireTag:o.sireTag,note:o.note,status:'ACTIVE',by:db.meta.encoder,added:todayISO()});
+    save(); toast(s?'Updated.':'Added '+o.tag+'.'); render();
+  });
+}
+function askCull(id){
+  const s=sowOf(id);
+  if(s.status==='CULL'){ s.status='ACTIVE'; save(); render(); return; }
+  confirmBox('Remove '+s.tag+' from the active list? All her records stay.',()=>{
+    s.status='CULL'; s.culledAt=todayISO(); dropTasks(t=>t.sowId===id); save(); toast(s.tag+' culled.'); render();});
+}
+function askHeat(sowId){
+  modal('Seen in heat','Enter the DATE AND TIME you first saw her. The 28–32 hours start here.',[
+    sowId?{k:'sowId',label:'Sow',type:'select',req:true,opts:[[sowId,sowOf(sowId).tag]],val:sowId}
+         :sowPicker('sowId','Which sow',s=>!openFarrow(s.id)),
+    {k:'at',label:'Date and time seen',type:'datetime-local',req:true,val:nowLocal()},
+    {k:'note',label:'Notes (standing heat? discharge?)',val:''}
+  ],'Save the heat',o=>reportHeat(o.sowId,o.at,o.note));
+}
+function askAI(cycleId){
+  const c=cycleOf(cycleId); if(!c) return;
+  const n=(c.ais||[]).length;
+  const w=aiWindow(c.heatAt), st=aiState(c.heatAt);
+  if(n){
+    const prev=c.ais[n-1];
+    const gapNote=`<div class="card tight"><b class="small">${ORD[n]||(n+1)+'th'} dose</b>
+      <div class="tiny">Last dose was ${fshort(prev.at)} ${ftime(prev.at)}. A second dose is usually given
+      12–24 hours after the first, which lands around ${fshort(new Date(new Date(prev.at).getTime()+18*HR).toISOString())}
+      ${ftime(new Date(new Date(prev.at).getTime()+18*HR).toISOString())}.
+      Once you save, the D18–21, D40, D60 checks and the 114 days are worked out again from this newest dose.</div></div>`;
+    modal('Another dose for '+tagOf(c.sowId),'For a sow slow to release, so the service covers the whole window.',[
+      {k:'at',label:'Date and time of this dose',type:'datetime-local',req:true,val:nowLocal()},
+      boarPicker('boarId'),
+      {k:'tech',label:'Who did the A.I.',val:who()},
+      {k:'note',label:'Notes (dose, semen, reflex)',val:''}
+    ],'Record the dose',o=>recordAI(cycleId,o.at,o.boarId,o.tech,o.note),gapNote);
+    const e=$('f_boarId'); if(e) e.value=prev.boarId||'';
+    return;
+  }
+  const sw=sowOf(c.sowId), ad=ageDays(sw&&sw.birth);
+  const young=(ad!=null&&ad<210&&!(sw.parity))?`<div class="card tight" style="background:var(--alert-bg);border-color:#EDC6BC">
+     <b class="small">This gilt is still young.</b><div class="tiny">She is ${Math.ceil(210-ad)} days short of 7 months. Better to skip this heat if you can.</div></div>`:'';
+  const warn=st.s==='soon'?`<div class="card tight" style="background:var(--warn-bg);border-color:#EDD9AC">
+     <b class="small">Too early.</b><div class="tiny">By your own program there are still ${hhmm(st.ms)} before the 28-hour mark (${ftime(w.from)}).</div></div>`
+   :st.s==='late'?`<div class="card tight" style="background:var(--alert-bg);border-color:#EDC6BC">
+     <b class="small">The window has passed.</b><div class="tiny">The 32 hours ended at ${ftime(w.to)}. Record it anyway if you bred her — just say so in the notes.</div></div>`:'';
+  modal('A.I. done on '+tagOf(c.sowId),'Window: '+fshort(w.from)+' '+ftime(w.from)+' – '+ftime(w.to),[
+    {k:'at',label:'Date and time of the A.I.',type:'datetime-local',req:true,val:nowLocal()},
+    boarPicker('boarId'),
+    {k:'tech',label:'Who did the A.I.',val:db.meta.encoder},
+    {k:'note',label:'Notes (dose, semen, reflex)',val:''}
+  ],'Record',o=>recordAI(cycleId,o.at,o.boarId,o.tech,o.note),young+warn);
+}
+function askCheck(cycleId){
+  const c=cycleOf(cycleId); const d0=todayISO(c.aiAt), n=dDiff(d0,todayISO());
+  const which=n<35?'RH1':n<52?'RH2':'RH3';
+  modal('Pregnancy check','D'+n+' after A.I. — did she reheat or not?',[
+    {k:'which',label:'Which check',type:'select',val:which,opts:[['RH1','D18–21 (first check)'],['RH2','D40'],['RH3','D60 — confirm']]},
+    {k:'result',label:'Result',type:'select',req:true,opts:[['clear','No reheat — continue'],['reheat','Reheated — the A.I. failed']]},
+    {k:'date',label:'Date of the check',type:'date',req:true,val:todayISO()},
+    {k:'note',label:'Notes',val:''}
+  ],'Save',o=>recordCheck(cycleId,o.which,o.result,o.date,o.note));
+}
+function askReheat(cycleId){
+  const c=cycleOf(cycleId); const s=sowOf(c.sowId);
+  modal('Reheat: '+s.tag,'The old A.I. record closes automatically and a fresh cycle opens. No duplicates.',[
+    {k:'at',label:'Date and time the reheat was seen',type:'datetime-local',req:true,val:nowLocal()}
+  ],'Confirm the reheat',o=>markReheat(c,o.at));
+}
+function askFarrow(sowId){
+  const cands=db.cycles.filter(c=>['BRED','PREGNANT'].includes(c.status)&&(!sowId||c.sowId===sowId));
+  if(!cands.length){ toast('No sow is being monitored for pregnancy right now.'); return; }
+  const pick=cands.sort((a,b)=>a.dueDate.localeCompare(b.dueDate));
+  modal('Farrowing','Enter everything — live, stillborn, mummified.',[
+    {k:'cid',label:'Which sow',type:'select',req:true,val:pick[0].id,
+      opts:pick.map(c=>[c.id,tagOf(c.sowId)+' · due '+fshort(c.dueDate)])},
+    {k:'date',label:'Farrowing date',type:'date',req:true,val:todayISO()},
+    {k:'alive',label:'Born alive',type:'number',req:true,val:'',min:0},
+    {k:'still',label:'Stillborn',type:'number',val:0,min:0},
+    {k:'mumi',label:'Mummified',type:'number',val:0,min:0},
+    {k:'weak',label:'Weak / small',type:'number',val:0,min:0},
+    {k:'note',label:'Notes (length of farrowing, assistance, etc.)',type:'textarea',val:''}
+  ],'Record the farrowing',o=>recordFarrow(o.cid,o));
+}
+function askWean(fid){
+  const f=db.farrowings.find(x=>x.id===fid);
+  modal('Wean the litter of '+tagOf(f.sowId),'D'+dDiff(f.date,todayISO())+'. This includes Vit ADE for the piglets and 10mL for the sow.',[
+    {k:'date',label:'Weaning date',type:'date',req:true,val:todayISO()},
+    {k:'weaned',label:'How many piglets weaned',type:'number',req:true,val:Math.max(0,f.alive-(f.crushed||0)),min:0},
+    {k:'crushed',label:'Crushed / died while suckling (total)',type:'number',val:f.crushed||0,min:0},
+    {k:'note',label:'Notes (average weight, etc.)',val:''}
+  ],'Wean',o=>recordWean(fid,o.date,o.weaned,o.crushed,o.note));
+}
+function askCrush(fid){
+  const f=db.farrowings.find(x=>x.id===fid); if(!f) return;
+  const left=f.alive-(f.crushed||0);
+  const age=dDiff(f.date,todayISO());
+  modal('Piglet death \u2014 '+tagOf(f.sowId),
+    'Born alive '+f.alive+', still with the sow '+left+'. Day '+age+' of this litter.',[
+    {k:'n',label:'How many died',type:'number',req:true,val:1,min:1},
+    {k:'date',label:'Date it happened',type:'date',req:true,val:todayISO(),
+      hint:'Use the real date, even if you are entering it days later.'},
+    {k:'why',label:'Reason',type:'select',opts:['Crushed by the sow','Small/weak','Scours','Sick',
+      'Starved / no milk','Savaged','Not known','Other']},
+    {k:'note',label:'Notes',val:''}
+  ],'Record the death',o=>{
+    const n=num(o.n);
+    if(n>left) return toast('Only '+left+' piglet(s) are still with the sow.');
+    f.crushed=(f.crushed||0)+n;
+    (f.deaths=f.deaths||[]).push({id:uid('d'),date:o.date,n,why:o.why,note:o.note,by:who(),
+      day:dDiff(f.date,o.date)});
+    save(); toast(n+' recorded. '+(f.alive-f.crushed)+' left with '+tagOf(f.sowId)+'.'); render(); });
+}
+function askNurseryDeath(id){
+  const b=db.nursery.find(x=>x.id===id); if(!b) return;
+  const left=b.heads-b.out-b.dead;
+  modal('Death in the nursery \u2014 '+b.sowTag,'There are '+left+' head in this group.',[
+    {k:'n',label:'How many died',type:'number',req:true,val:1,min:1},
+    {k:'date',label:'Date it happened',type:'date',req:true,val:todayISO()},
+    {k:'why',label:'Reason',type:'select',opts:['Scours','Sick','Small/weak','Starved','Injury','Not known','Other']},
+    {k:'note',label:'Notes',val:''}
+  ],'Record the death',o=>{
+    const n=num(o.n);
+    if(n>left) return toast('Only '+left+' head are in this group.');
+    b.dead=(b.dead||0)+n;
+    (b.deaths=b.deaths||[]).push({id:uid('d'),date:o.date,n,why:o.why,note:o.note,by:who()});
+    save(); toast(n+' recorded. '+(b.heads-b.out-b.dead)+' left in the nursery.'); render(); });
+}
+/* ============================================================
+   VIEW: PIGLETS (suckling + nursery)
+   ============================================================ */
+const NURSERY_RATION={baby7:2, foster:2, scourex:7, per:10}; // per 10 head
+function ration(heads){
+  const k=heads/NURSERY_RATION.per;
+  return {b7:Math.round(NURSERY_RATION.baby7*k*10)/10,
+          fm:Math.round(NURSERY_RATION.foster*k*10)/10,
+          sc:Math.ceil(NURSERY_RATION.scourex*k)};
+}
+function vBaktin(){
+  const suck=db.farrowings.filter(f=>!f.weanDate).sort((a,b)=>a.date.localeCompare(b.date));
+  const nur=db.nursery.filter(b=>b.status==='open');
+  let h=`<h1>Piglets</h1><div class="small muted" style="margin-bottom:10px">
+    21 days on the sow, then nursery. The D3 / D7 / D15 / D21 program is scheduled for you.</div>`;
+  h+=`<div class="grid3" style="margin-bottom:11px">
+    <div class="stat"><b class="num">${suck.reduce((a,f)=>a+f.alive-(f.crushed||0),0)}</b><span>Suckling</span></div>
+    <div class="stat"><b class="num">${nur.reduce((a,b)=>a+(b.heads-b.out-b.dead),0)}</b><span>In nursery</span></div>
+    <div class="stat"><b class="num">${suck.length}</b><span>Active litters</span></div></div>`;
+
+  h+=`<div class="sect-head"><h2>Lactating</h2><span class="count">${suck.length}</span></div>`;
+  h+= suck.length? suck.map(f=>{
+    const d=dDiff(f.date,todayISO());
+    const pend=db.tasks.filter(t=>t.ref===f.id&&!t.done&&fromToday(t.date)<=0).length;
+    const lost=f.crushed||0;
+    return `<div class="card tight"><button class="listitem" style="border:0;margin:0;padding:2px 0;border-radius:0"
+        onclick="go('litter','${f.id}')">${tagChip(tagOf(f.sowId))}
+      <div class="meta"><div class="l1">D${d} · ${f.alive-lost} piglets
+        ${pend?`<span class="pill r">${pend} pending</span>`:''}</div>
+      <div class="l2">Farrowed ${fshort(f.date)} · born alive ${f.alive}${lost?' · lost '+lost:''} · wean ${fshort(f.weanPlan)}</div></div>
+      <span class="chev">›</span></button>
+      <div class="row wrap" style="margin-top:8px">
+        <button class="btn ghost sm" onclick="askCrush('${f.id}')">Record a death</button>
+        <button class="btn ghost sm" onclick="askWean('${f.id}')">Wean</button></div></div>`;
+  }).join('') : emptyBox('No lactating sows right now','They show up here once you record a farrowing.','Record a farrowing','askFarrow()');
+
+  h+=`<div class="sect-head"><h2>Nursery</h2><span class="count">${nur.length} groups</span></div>`;
+  if(!nur.length) h+=emptyBox('No nursery groups','These are created automatically when you wean a litter.','','');
+  else h+=nur.map(b=>{
+    const on=b.heads-b.out-b.dead, r=ration(on), d=dDiff(b.inDate,todayISO());
+    return `<div class="card"><div class="spread"><div class="row">${tagChip(b.sowTag)}
+      <b>${on} head</b><span class="pill n">D${d}</span></div>
+      <div class="row"><button class="btn ghost sm" onclick="askNurseryDeath('${b.id}')">Death</button>
+      <button class="btn ghost sm" onclick="askNursery('${b.id}')">Update</button></div></div>
+      <hr class="sep"><div class="small"><b>Allocation:</b> ${r.b7} bags Baby 7 · ${r.fm} packs Foster Milk · ${r.sc} sachets Scourex
+      <div class="tiny muted">Based on 2 bags / 2 packs / 7 sachets per 10 head. Scourex for 7 days only, then Baby 7 until they move to Baby 11.</div></div>
+      ${b.dead||b.out?`<div class="tiny muted" style="margin-top:6px">Died: ${b.dead} · Moved to fattening: ${b.out}</div>`:''}
+      ${(b.deaths&&b.deaths.length)?`<div class="tiny muted">${b.deaths.slice(-3).map(x=>fshort(x.date)+': '+x.n+' · '+esc(x.why||'')).join(' | ')}</div>`:''}
+      ${b.note?`<div class="tiny" style="margin-top:6px">${esc(b.note)}</div>`:''}</div>`;
+  }).join('');
+  return h;
+}
+function askNursery(id){
+  const b=db.nursery.find(x=>x.id===id);
+  modal('Nursery '+b.sowTag,'Now: '+(b.heads-b.out-b.dead)+' head.',[
+    {k:'dead',label:'Total deaths',type:'number',val:b.dead,min:0},
+    {k:'out',label:'Already moved to fattening',type:'number',val:b.out,min:0},
+    {k:'note',label:'Notes (scours, weight, etc.)',type:'textarea',val:b.note},
+    {k:'close',label:'Close this group?',type:'select',val:'no',opts:[['no','Not yet'],['yes','Yes, close it']]}
+  ],'Save',o=>{ b.dead=num(o.dead); b.out=num(o.out); b.note=o.note;
+    if(o.close==='yes') b.status='closed'; save(); toast('Updated.'); render(); });
+}
+
+function vLitter(){
+  const f=db.farrowings.find(x=>x.id===SUB); if(!f) return vBaktin();
+  const tag=tagOf(f.sowId), d=dDiff(f.date,todayISO());
+  const ts=db.tasks.filter(t=>t.ref===f.id).sort((a,b)=>a.date.localeCompare(b.date));
+  let h=`<button class="backlink" onclick="go('baktin')">‹ Piglets</button>
+   <div class="card"><div class="spread"><div class="row">${tagChip(tag)}<b>Litter ${fshort(f.date)}</b></div>
+   <span class="pill ${f.weanDate?'n':'g'}">${f.weanDate?'Weaned':'D'+d}</span></div><hr class="sep">
+   <div class="grid3 small">
+     <div class="stat"><b class="num">${f.alive}</b><span>Live born</span></div>
+     <div class="stat"><b class="num">${f.still}</b><span>Stillborn</span></div>
+     <div class="stat"><b class="num">${f.mumi}</b><span>Mummified</span></div>
+     <div class="stat"><b class="num">${f.crushed||0}</b><span>Crushed/died</span></div>
+     <div class="stat"><b class="num">${f.weak||0}</b><span>Weak</span></div>
+     <div class="stat"><b class="num">${f.weaned!=null?f.weaned:f.alive-(f.crushed||0)}</b><span>${f.weanDate?'Weaned':'Remaining'}</span></div>
+   </div>
+   <hr class="sep"><div class="small muted">Gestation ${f.gest||114} days · boar: ${f.boarId&&boarOf(f.boarId)?esc(boarOf(f.boarId).tag):'—'}
+   ${f.weanDate?' · weaned '+fdate(f.weanDate):''}</div>
+   ${f.note?`<div class="small" style="margin-top:6px">${esc(f.note)}</div>`:''}</div>`;
+
+  h+=`<div class="sect-head"><h2>Piglet program</h2></div><div class="card">${ts.map(taskLine).join('')}</div>`;
+  if(!f.weanDate) h+=`<div class="grid2"><button class="btn" onclick="askWean('${f.id}')">I-wean</button>
+    <button class="btn ghost" onclick="askCrush('${f.id}')">+ Death</button></div>`;
+  if(f.deaths&&f.deaths.length){
+    h+=`<div class="sect-head"><h2>Deaths</h2></div><div class="card tight"><table class="tbl">
+      <tr><th>Date</th><th class="n">Day</th><th class="n">Count</th><th>Reason</th></tr>
+      ${f.deaths.map(x=>`<tr><td>${fshort(x.date)}</td><td class="n">${x.day!=null?'D'+x.day:'—'}</td>
+        <td class="n">${x.n}</td><td>${esc(x.why||'')}<div class="tiny muted">${esc(x.note||'')}${x.by?' · '+esc(x.by):''}</div></td></tr>`).join('')}
+    </table></div>`;
+  }
+  return h;
+}
+/* ============================================================
+   VIEW: FATTENING
+   ============================================================ */
+const LOGTYPE=[['feed','Feeds'],['med','Medicine/vaccine'],['weight','Weight'],['dead','Death'],['act','Activity'],['note','Note/instruction']];
+function batchOn(b){ return b.heads-(b.sold||0)-(b.dead||0); }
+function batchFeedCost(b){ return db.feeds.filter(x=>x.ref===b.id).reduce((a,x)=>a+num(x.total),0)
+  + db.flogs.filter(x=>x.batchId===b.id&&x.type==='feed').reduce((a,x)=>a+num(x.cost),0); }
+function vFat(){
+  const open=db.fatten.filter(b=>b.status==='open'), closed=db.fatten.filter(b=>b.status!=='open');
+  let h=`<div class="spread" style="margin-bottom:10px"><h1>Fattening</h1>
+    <button class="btn sm" onclick="askBatch()">+ Batch</button></div>`;
+  if(!db.fatten.length) return h+emptyBox('No batches yet','Create one batch per group moved out of the nursery. Feeds, weights and activities all land here.','Create the first batch','askBatch()');
+  h+=`<div class="grid3" style="margin-bottom:11px">
+    <div class="stat"><b class="num">${open.reduce((a,b)=>a+batchOn(b),0)}</b><span>Alive now</span></div>
+    <div class="stat"><b class="num">${open.length}</b><span>Open batches</span></div>
+    <div class="stat"><b class="money" style="font-size:18px">${peso(open.reduce((a,b)=>a+batchFeedCost(b),0))}</b><span>Feeds (open)</span></div></div>`;
+  const card=b=>{
+    const on=batchOn(b), d=dDiff(b.start,todayISO());
+      const last=db.flogs.filter(x=>x.batchId===b.id&&x.type==='weight').sort((a,c)=>a.date.localeCompare(c.date)).slice(-1)[0];
+    const adg=last&&b.startWt? Math.round((num(last.qty)-num(b.startWt))/Math.max(1,dDiff(b.start,last.date))*1000)/1000 : null;
+    return `<button class="listitem" onclick="go('batch','${b.id}')">
+      <div class="meta"><div class="l1">${esc(b.code)} ${b.status!=='open'?'<span class="pill n">closed</span>':''}</div>
+      <div class="l2">${on} head · D${d} · ${last?'last weight '+last.qty+'kg':'no weight yet'}${adg?' · ADG '+adg+'kg':''}</div></div>
+      <span class="chev">›</span></button>`;};
+  h+=`<div class="sect-head"><h2>Open</h2></div>`+ (open.map(card).join('')||emptyBox('None','',''));
+  if(closed.length) h+=`<div class="sect-head"><h2>Closed</h2></div>`+closed.map(card).join('');
+  return h;
+}
+function askBatch(id){
+  const b=id?db.fatten.find(x=>x.id===id):null;
+  modal(b?'Edit the batch':'New fattening batch','',[
+    {k:'code',label:'Batch name',req:true,val:b?b.code:'B-'+todayISO().slice(2,10).replace(/-/g,''),ph:'B-260913 / Pen 3'},
+    {k:'start',label:'Start date',type:'date',req:true,val:b?b.start:todayISO()},
+    {k:'heads',label:'How many head',type:'number',req:true,val:b?b.heads:'',min:1},
+    {k:'startWt',label:'Average starting weight (kg)',type:'number',val:b?b.startWt:''},
+    {k:'source',label:'Source',val:b?b.source:'',ph:'nursery of S-012 / bought'},
+    {k:'pen',label:'Pen / location',val:b?b.pen:''},
+    {k:'note',label:'Notes',type:'textarea',val:b?b.note:''}
+  ],'Save',o=>{
+    if(b) Object.assign(b,{code:o.code,start:o.start,heads:num(o.heads),startWt:o.startWt,source:o.source,pen:o.pen,note:o.note});
+    else db.fatten.push({id:uid('b'),code:o.code,start:o.start,heads:num(o.heads),startWt:o.startWt,
+      source:o.source,pen:o.pen,note:o.note,sold:0,dead:0,status:'open',by:db.meta.encoder});
+    save(); toast('Batch saved.'); render();
+  });
+}
+function vBatch(){
+  const b=db.fatten.find(x=>x.id===SUB); if(!b) return vFat();
+  const logs=db.flogs.filter(x=>x.batchId===b.id).sort((a,c)=>c.date.localeCompare(a.date));
+  const feedsHere=db.feeds.filter(x=>x.ref===b.id);
+  const wts=db.flogs.filter(x=>x.batchId===b.id&&x.type==='weight').sort((a,c)=>a.date.localeCompare(c.date));
+  const last=wts.slice(-1)[0];
+  const d=dDiff(b.start,todayISO()), on=batchOn(b);
+  const adg=last&&b.startWt? (num(last.qty)-num(b.startWt))/Math.max(1,dDiff(b.start,last.date)) : null;
+  const kgFeed=feedsHere.reduce((a,x)=>a+num(x.bags)*num(x.kgPerBag),0);
+  const gain=last&&b.startWt? (num(last.qty)-num(b.startWt))*on : 0;
+  let h=`<button class="backlink" onclick="go('fat')">‹ Fattening</button>
+   <div class="card"><div class="spread"><h2>${esc(b.code)}</h2>
+     <button class="btn ghost sm" onclick="askBatch('${b.id}')">Edit</button></div>
+   <div class="small muted">${fdate(b.start)} · D${d} · ${esc(b.pen||'')} ${b.source?'· from: '+esc(b.source):''}</div>
+   <hr class="sep"><div class="grid3">
+     <div class="stat"><b class="num">${on}</b><span>Live born</span></div>
+     <div class="stat"><b class="num">${b.dead||0}</b><span>Died</span></div>
+     <div class="stat"><b class="num">${b.sold||0}</b><span>Sold</span></div>
+     <div class="stat"><b class="num">${last?last.qty:'—'}</b><span>Weight (kg)</span></div>
+     <div class="stat"><b class="num">${adg?Math.round(adg*1000)/1000:'—'}</b><span>ADG kg/day</span></div>
+     <div class="stat"><b class="num">${gain&&kgFeed?Math.round(kgFeed/gain*100)/100:'—'}</b><span>FCR</span></div>
+   </div>
+   <hr class="sep"><div class="spread small"><span class="muted">Feed cost</span><b class="money">${peso(batchFeedCost(b))}</b></div>
+   <div class="spread small"><span class="muted">Cost per head</span><b class="money">${on?peso(batchFeedCost(b)/on):'—'}</b></div></div>`;
+  h+=`<div class="grid2" style="margin-bottom:11px">
+    <button class="btn" onclick="askFeed('${b.id}')">Feeds</button>
+    <button class="btn ghost" onclick="askFlog('${b.id}')">Activity / weight</button></div>`;
+  if(b.status==='open') h+=`<div class="card tight"><button class="btn ghost sm wide" onclick="askSell('${b.id}')">Record a sale</button></div>`;
+
+  if(wts.length>1){
+    h+=`<div class="sect-head"><h2>Growth</h2></div><div class="card tight"><table class="tbl">
+      <tr><th>Date</th><th class="n">Kg</th><th class="n">Day</th><th class="n">ADG</th></tr>`;
+    let prev={date:b.start,qty:b.startWt};
+    h+=wts.map(w=>{const dd=Math.max(1,dDiff(prev.date,w.date));
+      const g=prev.qty?Math.round((num(w.qty)-num(prev.qty))/dd*1000)/1000:'—';
+      const row=`<tr><td>${fshort(w.date)}</td><td class="n">${w.qty}</td><td class="n">${dDiff(b.start,w.date)}</td><td class="n">${g}</td></tr>`;
+      prev=w; return row;}).join('')+`</table></div>`;
+  }
+  h+=`<div class="sect-head"><h2>Records</h2><span class="count">${logs.length+feedsHere.length}</span></div><div class="card tight">`;
+  const all=logs.map(l=>({d:l.date,t:(LOGTYPE.find(x=>x[0]===l.type)||['','?'])[1],x:l.detail+(l.qty?' · '+l.qty:'')+(l.cost?' · '+peso(l.cost):''),by:l.by}))
+    .concat(feedsHere.map(x=>({d:x.date,t:'Feeds',x:x.feed+' · '+x.bags+' bags · '+peso(x.total),by:x.by})))
+    .sort((a,c)=>c.d.localeCompare(a.d)).slice(0,60);
+  h+= all.length? all.map(r=>`<div style="padding:8px 0;border-bottom:1px solid var(--line-soft)">
+      <div class="spread"><b class="small">${esc(r.t)}</b><span class="tiny muted">${fshort(r.d)}${r.by?' · '+esc(r.by):''}</span></div>
+      <div class="small">${esc(r.x)}</div></div>`).join('')
+    : `<div class="empty">No records yet. Start with Feeds or Activity above.</div>`;
+  h+=`</div>`;
+  return h;
+}
+function askFlog(batchId){
+  modal('Batch record','Weight, medicine, deaths, or any activity you want logged.',[
+    {k:'type',label:'Type',type:'select',req:true,opts:LOGTYPE.filter(t=>t[0]!=='feed')},
+    {k:'date',label:'Date',type:'date',req:true,val:todayISO()},
+    {k:'detail',label:'Details',req:true,ph:'e.g. deworm Ivermectin / average weight'},
+    {k:'qty',label:'Number (kg, count, dose)',type:'number',val:''},
+    {k:'cost',label:'Cost (if you bought something)',type:'number',val:''}
+  ],'Save',o=>{
+    db.flogs.push({id:uid('l'),batchId,type:o.type,date:o.date,detail:o.detail,qty:o.qty,cost:o.cost,by:db.meta.encoder});
+    const b=db.fatten.find(x=>x.id===batchId);
+    if(o.type==='dead'&&b) b.dead=(b.dead||0)+(num(o.qty)||1);
+    if(num(o.cost)) db.expenses.push({id:uid('e'),date:o.date,cat:'Bulong/bakuna',desc:b.code+' · '+o.detail,amount:num(o.cost),by:db.meta.encoder,auto:true});
+    save(); toast('Recorded.'); render();
+  });
+}
+function askSell(batchId){
+  const b=db.fatten.find(x=>x.id===batchId);
+  modal('Sale from '+b.code,'',[
+    {k:'date',label:'Date',type:'date',req:true,val:todayISO()},
+    {k:'heads',label:'How many head',type:'number',req:true,val:'',min:1},
+    {k:'kg',label:'Total kilos',type:'number',val:''},
+    {k:'amount',label:'Total amount',type:'number',req:true,val:''},
+    {k:'buyer',label:'Buyer',val:''},
+    {k:'close',label:'Close the batch?',type:'select',val:'no',opts:[['no','Not yet'],['yes','Yes']]}
+  ],'Record',o=>{
+    b.sold=(b.sold||0)+num(o.heads); if(o.close==='yes') b.status='closed';
+    db.sales.push({id:uid('x'),date:o.date,kind:'Fattener',ref:b.code,heads:num(o.heads),kg:num(o.kg),
+      amount:num(o.amount),buyer:o.buyer,by:db.meta.encoder});
+    save(); toast('Sale recorded: '+peso(o.amount)); render();
+  });
+}
+/* ============================================================
+   VIEW: MONEY (feeds, expenses, wages, sales)
+   ============================================================ */
+const FEEDKINDS=['Baby 7','Baby 11','Foster Milk','Scourex','Grower','Finisher','Lactating','Gestating','Boar','Other'];
+const EXPCATS=['Medicine/vaccine','Semen (A.I.)','Electricity/water','Fuel','Repairs','Supplies','Transport','Taxes/permits','Other'];
+function monthOf(iso){ return (iso||'').slice(0,7); }
+function monthLabel(m){ const [y,mm]=m.split('-'); return MON[+mm-1]+' '+y; }
+function allMonths(){
+  const s=new Set([monthOf(todayISO())]);
+  db.feeds.concat(db.expenses).forEach(x=>s.add(monthOf(x.date)));
+  db.payroll.concat(db.sales).forEach(x=>s.add(monthOf(x.date)));
+  return [...s].filter(Boolean).sort().reverse();
+}
+let MONTH=null;
+function setMonth(m){ MONTH=m; render(); }
+function monthTotals(m){
+  const f=db.feeds.filter(x=>monthOf(x.date)===m).reduce((a,x)=>a+num(x.total),0);
+  const g=db.expenses.filter(x=>monthOf(x.date)===m).reduce((a,x)=>a+num(x.amount),0);
+  const p=db.payroll.filter(x=>monthOf(x.date)===m).reduce((a,x)=>a+num(x.net),0);
+  const s=db.sales.filter(x=>monthOf(x.date)===m).reduce((a,x)=>a+num(x.amount),0);
+  return {f,g,p,s,total:f+g+p,net:s-(f+g+p)};
+}
+function vKwarta(){
+  const ms=allMonths(); const m=MONTH&&ms.includes(MONTH)?MONTH:ms[0];
+  const t=monthTotals(m);
+  let h=`<h1>Money</h1><div class="chipbar" style="margin-top:8px">
+    ${ms.slice(0,12).map(x=>`<button class="${x===m?'on':''}" onclick="setMonth('${x}')">${monthLabel(x)}</button>`).join('')}</div>`;
+  h+=`<div class="card"><div class="spread"><div><div class="small muted">Expenses ${monthLabel(m)}</div>
+    <div class="money" style="font-size:26px">${peso(t.total)}</div></div>
+    <div style="text-align:right"><div class="small muted">Sales</div>
+    <div class="money" style="font-size:26px">${peso(t.s)}</div></div></div>
+    <hr class="sep">
+    <div class="spread small"><span>Feeds</span><b class="money">${peso(t.f)}</b></div>
+    <div class="bar"><i style="width:${t.total?Math.round(t.f/t.total*100):0}%"></i></div>
+    <div class="spread small" style="margin-top:8px"><span>Wages</span><b class="money">${peso(t.p)}</b></div>
+    <div class="bar"><i style="width:${t.total?Math.round(t.p/t.total*100):0}%;background:var(--warn)"></i></div>
+    <div class="spread small" style="margin-top:8px"><span>Other expenses</span><b class="money">${peso(t.g)}</b></div>
+    <div class="bar"><i style="width:${t.total?Math.round(t.g/t.total*100):0}%;background:var(--muted)"></i></div>
+    <hr class="sep"><div class="spread"><b>Balance</b>
+    <b class="money" style="font-size:19px;color:${t.net>=0?'var(--good)':'var(--alert)'}">${peso(t.net)}</b></div></div>`;
+  h+=`<div class="grid2" style="margin-bottom:11px">
+    <button class="btn" onclick="askFeed()">+ Feeds</button>
+    <button class="btn ghost" onclick="askExpense()">+ Expense</button>
+    <button class="btn ghost" onclick="askPay()">+ Wages</button>
+    <button class="btn ghost" onclick="askSale()">+ Sale</button></div>`;
+  h+=`<div class="card tight"><button class="listitem" style="border:0;margin:0;padding:9px 0;border-radius:0;border-bottom:1px solid var(--line-soft)" onclick="go('feeds')">
+      <div class="meta"><div class="l1">Feed records</div><div class="l2">${db.feeds.length} entries</div></div><span class="chev">›</span></button>
+    <button class="listitem" style="border:0;margin:0;padding:9px 0;border-radius:0;border-bottom:1px solid var(--line-soft)" onclick="go('gastos')">
+      <div class="meta"><div class="l1">Operating expenses</div><div class="l2">${db.expenses.length} entries</div></div><span class="chev">›</span></button>
+    <button class="listitem" style="border:0;margin:0;padding:9px 0;border-radius:0;border-bottom:1px solid var(--line-soft)" onclick="go('sweldo')">
+      <div class="meta"><div class="l1">Worker wages</div><div class="l2">${db.workers.length} people · ${db.payroll.length} payments</div></div><span class="chev">›</span></button>
+    <button class="listitem" style="border:0;margin:0;padding:9px 0;border-radius:0" onclick="go('sales')">
+      <div class="meta"><div class="l1">Sales</div><div class="l2">${db.sales.length} entries</div></div><span class="chev">›</span></button></div>`;
+  return h;
+}
+function feedTargets(){
+  const o=[['sow','Sows / gestating'],['lact','Lactating sows'],['baktin','Piglets (creep)'],['nursery','Nursery']];
+  db.fatten.filter(b=>b.status==='open').forEach(b=>o.push([b.id,'Fattening · '+b.code]));
+  o.push(['boar','Boars']); return o;
+}
+function askFeed(ref){
+  modal('Feeds used','Log every bag taken out of the bodega.',[
+    {k:'date',label:'Date',type:'date',req:true,val:todayISO()},
+    {k:'ref',label:'For which group',type:'select',req:true,val:ref||'sow',opts:feedTargets()},
+    {k:'feed',label:'Feed type',type:'select',req:true,opts:FEEDKINDS},
+    {k:'bags',label:'How many bags/packs',type:'number',req:true,val:1},
+    {k:'kgPerBag',label:'Kilos per bag',type:'number',val:50},
+    {k:'price',label:'Price per bag',type:'number',val:''},
+    {k:'note',label:'Notes',val:''}
+  ],'Save',o=>{
+    const total=num(o.bags)*num(o.price);
+    db.feeds.push({id:uid('fd'),date:o.date,ref:o.ref,feed:o.feed,bags:num(o.bags),kgPerBag:num(o.kgPerBag),
+      price:num(o.price),total,note:o.note,by:db.meta.encoder});
+    save(); toast('Feeds recorded'+(total?' · '+peso(total):'')); render();
+  });
+}
+function refLabel(r){ const b=db.fatten.find(x=>x.id===r); if(b) return 'Fattening '+b.code;
+  return ({sow:'Sows',lact:'Lactating',baktin:'Piglets',nursery:'Nursery',boar:'Boars'})[r]||r; }
+function vFeeds(){
+  const list=db.feeds.slice().sort((a,b)=>b.date.localeCompare(a.date));
+  let h=`<button class="backlink" onclick="go('kwarta')">‹ Money</button>
+   <div class="spread" style="margin-bottom:8px"><h1>Feed records</h1><button class="btn sm" onclick="askFeed()">+ New</button></div>`;
+  if(!list.length) return h+emptyBox('No records yet','Log every bag used so you can see the true cost of each group.','Add','askFeed()');
+  const byRef={}; list.forEach(x=>{byRef[x.ref]=(byRef[x.ref]||0)+num(x.total);});
+  h+=`<div class="card tight"><table class="tbl"><tr><th>Group</th><th class="n">Total cost</th></tr>
+    ${Object.entries(byRef).sort((a,b)=>b[1]-a[1]).map(([r,v])=>`<tr><td>${esc(refLabel(r))}</td><td class="n money">${peso(v)}</td></tr>`).join('')}</table></div>`;
+  h+=`<div class="card tight scrollx"><table class="tbl">
+    <tr><th>Date</th><th>Feed</th><th>For</th><th class="n">Bags</th><th class="n">Cost</th><th></th></tr>
+    ${list.slice(0,120).map(x=>`<tr><td>${fshort(x.date)}</td><td>${esc(x.feed)}</td><td>${esc(refLabel(x.ref))}</td>
+      <td class="n">${x.bags}</td><td class="n money">${peso(x.total)}</td>
+      <td class="n"><button class="link" onclick="delRec('feeds','${x.id}')">×</button></td></tr>`).join('')}</table></div>`;
+  return h;
+}
+function askExpense(){
+  modal('Operating expense','',[
+    {k:'date',label:'Date',type:'date',req:true,val:todayISO()},
+    {k:'cat',label:'Type',type:'select',req:true,opts:EXPCATS},
+    {k:'desc',label:'Details',req:true,ph:'e.g. 3 vials Iron dextran'},
+    {k:'amount',label:'Amount',type:'number',req:true,val:''}
+  ],'Save',o=>{ db.expenses.push({id:uid('e'),date:o.date,cat:o.cat,desc:o.desc,amount:num(o.amount),by:db.meta.encoder});
+    save(); toast('Expense recorded.'); render(); });
+}
+function vGastos(){
+  const list=db.expenses.slice().sort((a,b)=>b.date.localeCompare(a.date));
+  let h=`<button class="backlink" onclick="go('kwarta')">‹ Money</button>
+   <div class="spread" style="margin-bottom:8px"><h1>Expenses</h1><button class="btn sm" onclick="askExpense()">+ New</button></div>`;
+  if(!list.length) return h+emptyBox('No expenses yet','Medicine, electricity, fuel and repairs all go here.','Add','askExpense()');
+  h+=`<div class="card tight scrollx"><table class="tbl"><tr><th>Date</th><th>Type</th><th>Details</th><th class="n">Amount</th><th></th></tr>
+    ${list.slice(0,150).map(x=>`<tr><td>${fshort(x.date)}</td><td>${esc(x.cat)}</td><td>${esc(x.desc)}
+      <div class="tiny muted">${esc(x.by||'')}</div></td><td class="n money">${peso(x.amount)}</td>
+      <td class="n"><button class="link" onclick="delRec('expenses','${x.id}')">×</button></td></tr>`).join('')}</table></div>`;
+  return h;
+}
+function askWorker(id){
+  const w=id?db.workers.find(x=>x.id===id):null;
+  modal(w?'Edit':'New worker','',[
+    {k:'name',label:'Name',req:true,val:w?w.name:''},
+    {k:'role',label:'Role',val:w?w.role:'',ph:'caretaker / A.I. tech'},
+    {k:'rate',label:'Daily wage',type:'number',val:w?w.rate:''},
+    {k:'note',label:'Notes',val:w?w.note:''}
+  ],'Save',o=>{ if(w) Object.assign(w,o,{rate:num(o.rate)});
+    else db.workers.push({id:uid('w'),name:o.name,role:o.role,rate:num(o.rate),note:o.note});
+    save(); render(); });
+}
+function askPay(){
+  if(!db.workers.length){ toast('Add a worker first.'); go('sweldo'); askWorker(); return; }
+  modal('Wage payment','',[
+    {k:'wid',label:'Who',type:'select',req:true,opts:db.workers.map(w=>[w.id,w.name+' · '+peso(w.rate)+'/day'])},
+    {k:'date',label:'Payment date',type:'date',req:true,val:todayISO()},
+    {k:'period',label:'Period covered',val:'',ph:'Sep 1–15'},
+    {k:'days',label:'How many days',type:'number',req:true,val:15},
+    {k:'extra',label:'Extra (overtime/bonus)',type:'number',val:0},
+    {k:'less',label:'Less (cash advance)',type:'number',val:0}
+  ],'Save',o=>{
+    const w=db.workers.find(x=>x.id===o.wid);
+    const gross=num(w.rate)*num(o.days)+num(o.extra), net=gross-num(o.less);
+    db.payroll.push({id:uid('p'),workerId:w.id,name:w.name,date:o.date,period:o.period,days:num(o.days),
+      rate:num(w.rate),extra:num(o.extra),less:num(o.less),gross,net,by:db.meta.encoder});
+    save(); toast('Wage for '+w.name+': '+peso(net)); render();
+  });
+}
+function vSweldo(){
+  let h=`<button class="backlink" onclick="go('kwarta')">‹ Money</button>
+   <div class="spread" style="margin-bottom:8px"><h1>Wages</h1>
+   <div class="row"><button class="btn ghost sm" onclick="askWorker()">+ Person</button>
+   <button class="btn sm" onclick="askPay()">+ Payment</button></div></div>`;
+  if(!db.workers.length) return h+emptyBox('No workers yet','Add your caretakers and their daily wage.','Add a person','askWorker()');
+  h+=`<div class="sect-head"><h2>Workers</h2></div>`;
+  h+=db.workers.map(w=>{
+    const paid=db.payroll.filter(p=>p.workerId===w.id).reduce((a,p)=>a+num(p.net),0);
+    return `<button class="listitem" onclick="askWorker('${w.id}')"><div class="meta">
+      <div class="l1">${esc(w.name)}</div><div class="l2">${esc(w.role||'')} · ${peso(w.rate)}/day · paid ${peso(paid)}</div></div>
+      <span class="chev">›</span></button>`;}).join('');
+  const list=db.payroll.slice().sort((a,b)=>b.date.localeCompare(a.date));
+  if(list.length) h+=`<div class="sect-head"><h2>Payment history</h2></div>
+    <div class="card tight scrollx"><table class="tbl"><tr><th>Date</th><th>Name</th><th class="n">Days</th><th class="n">Net</th><th></th></tr>
+    ${list.slice(0,100).map(p=>`<tr><td>${fshort(p.date)}</td><td>${esc(p.name)}<div class="tiny muted">${esc(p.period||'')}</div></td>
+      <td class="n">${p.days}</td><td class="n money">${peso(p.net)}</td>
+      <td class="n"><button class="link" onclick="delRec('payroll','${p.id}')">×</button></td></tr>`).join('')}</table></div>`;
+  return h;
+}
+function askSale(){
+  modal('Sale','',[
+    {k:'date',label:'Date',type:'date',req:true,val:todayISO()},
+    {k:'kind',label:'What was sold',type:'select',opts:['Fattener','Weanlings','Sow/cull','Boar','Other']},
+    {k:'ref',label:'Source',val:'',ph:'batch / eartag'},
+    {k:'heads',label:'How many head',type:'number',val:''},
+    {k:'kg',label:'Total kilos',type:'number',val:''},
+    {k:'amount',label:'Total amount',type:'number',req:true,val:''},
+    {k:'buyer',label:'Buyer',val:''}
+  ],'Save',o=>{ db.sales.push(Object.assign({id:uid('x'),by:db.meta.encoder},o,{heads:num(o.heads),kg:num(o.kg),amount:num(o.amount)}));
+    save(); toast('Sale recorded.'); render(); });
+}
+function vSales(){
+  const list=db.sales.slice().sort((a,b)=>b.date.localeCompare(a.date));
+  let h=can('money')?`<button class="backlink" onclick="go('kwarta')">‹ Money</button>`:'';
+  h+=`<div class="spread" style="margin-bottom:8px"><h1>Sales</h1><button class="btn sm" onclick="askSale()">+ New</button></div>`;
+  if(role()==='sales'){
+    const ready=db.fatten.filter(b=>b.status==='open').reduce((a,b)=>a+batchOn(b),0);
+    const wean=db.nursery.filter(b=>b.status==='open').reduce((a,b)=>a+(b.heads-b.out-b.dead),0);
+    const held=db.health.filter(c=>c.wdEnd&&fromToday(c.wdEnd)>=0);
+    const m=todayISO().slice(0,7);
+    const mine=db.sales.filter(x=>x.date.startsWith(m)).reduce((a,x)=>a+num(x.amount),0);
+    h+=`<div class="grid3" style="margin-bottom:9px">
+      <div class="stat"><b class="num">${ready}</b><span>Fatteners on hand</span></div>
+      <div class="stat"><b class="num">${wean}</b><span>Weanlings</span></div>
+      <div class="stat"><b class="money" style="font-size:17px">${peso(mine)}</b><span>Sold this month</span></div></div>`;
+    if(held.length) h+=`<div class="card tight" style="background:var(--warn-bg);border-color:#EDD9AC">
+      <b class="small">Under withdrawal — do not sell</b>
+      ${held.map(c=>`<div class="tiny">${esc(c.tag)} · clear on ${fshort(c.wdEnd)}</div>`).join('')}</div>`;
+  }
+  if(!list.length) return h+emptyBox('No sales yet','Record income from fatteners, weanlings or culled sows here.','Add','askSale()');
+  h+=`<div class="card tight scrollx"><table class="tbl"><tr><th>Date</th><th>Type</th><th class="n">Head</th><th class="n">Kg</th><th class="n">Amount</th><th></th></tr>
+    ${list.map(x=>`<tr><td>${fshort(x.date)}</td><td>${esc(x.kind)}<div class="tiny muted">${esc(x.ref||'')}</div></td>
+      <td class="n">${x.heads||'—'}</td><td class="n">${x.kg||'—'}</td><td class="n money">${peso(x.amount)}</td>
+      <td class="n"><button class="link" onclick="delRec('sales','${x.id}')">×</button></td></tr>`).join('')}</table></div>`;
+  return h;
+}
+function delRec(arr,id){
+  confirmBox('Delete this record?',()=>{ db[arr]=db[arr].filter(x=>x.id!==id); db.tombs.push(id);
+    save(); toast('Deleted.'); render(); });
+}
+/* ============================================================
+   VIEW: MORE
+   ============================================================ */
+function vMore(){
+  const items=[];
+  if(can('review')) items.push(['review','Operations review','Where the farm is losing time or money']);
+  if(can('breed')) items.push(['boars','Boars','The boars and semen you use for A.I.']);
+  items.push(['cloud','Cloud sync', cloudOn()?'Connected · '+esc(SYNC.msg):'Keep every phone on the same records']);
+  items.push(['guide','Program / guide','The sow and piglet schedule this app follows']);
+  items.push(['tasks','All tasks','Pending and completed — your area only']);
+  if(can('money')) items.push(['sweldo','Wages','Workers and their payments']);
+  if(role()==='admin') items.push(['users','People and sign-in','Accounts, roles and PINs']);
+  if(role()==='admin') items.push(['data','Backup and data','Export, import, or erase']);
+  let h=`<h1>More</h1>
+   <div class="card"><div class="spread"><div><b>${esc(SESSION.name)}</b>
+   <div class="small muted">${ROLE[role()].label} · ${esc(db.meta.farm)}</div></div>
+   <button class="btn ghost sm" onclick="accountMenu()">Account</button></div></div>`;
+  h+=items.map(([k,t,s])=>`<button class="listitem" onclick="go('${k}')">
+    <div class="meta"><div class="l1">${t}</div><div class="l2">${s}</div></div><span class="chev">›</span></button>`).join('');
+  h+=`<div class="card"><button class="btn ghost wide" onclick="signOut()">Sign out</button></div>`;
+  h+=`<div class="card small muted" style="margin-top:12px">Data stays on the device you are using. If you use this on your phone <b>and</b> your computer, export from one and import into the other to keep them in step.</div>`;
+  return h;
+}
+function vBoars(){
+  let h=`<button class="backlink" onclick="go('more')">‹ More</button>
+   <div class="spread" style="margin-bottom:8px"><h1>Boars</h1><button class="btn sm" onclick="askBoar()">+ New</button></div>`;
+  if(!db.boars.length) return h+emptyBox('No boars yet','List your boars or the semen you buy so you can trace the sire of every litter.','Add','askBoar()');
+  h+=db.boars.map(b=>{
+    const used=db.cycles.filter(c=>c.boarId===b.id).length;
+    return `<button class="listitem" onclick="askBoar('${b.id}')">${tagChip(b.tag)}
+      <div class="meta"><div class="l1">${esc(b.breed||'—')}</div>
+      <div class="l2">${esc(b.source||'')} · ${used} A.I. services</div></div><span class="chev">›</span></button>`;}).join('');
+  return h;
+}
+function askBoar(id){
+  const b=id?boarOf(id):null;
+  modal(b?'Edit':'New boar','',[
+    {k:'tag',label:'Eartag / name',req:true,val:b?b.tag:''},
+    {k:'breed',label:'Breed',val:b?b.breed:'',ph:'Duroc, Pietrain, Hampshire…'},
+    {k:'source',label:'Source',val:b?b.source:''},
+    {k:'note',label:'Notes',val:b?b.note:''}
+  ],'Save',o=>{ if(b) Object.assign(b,o); else db.boars.push(Object.assign({id:uid('br')},o));
+    save(); render(); });
+}
+function vGuide(){
+  return `<button class="backlink" onclick="go('more')">‹ More</button><h1>Farm program</h1>
+  <div class="small muted" style="margin-bottom:10px">This is what the app follows when it builds your schedule. Show it to your caretakers.</div>
+  <div class="sect-head"><h2>Gilts</h2></div><div class="card small">
+    <b>7 months</b> is the minimum age before A.I. The app tells you how many days are still short.</div>
+  <div class="sect-head"><h2>Heat and A.I.</h2></div><div class="card small">
+    The moment you see her in heat, log the <b>date and TIME</b>. The breeding window is <b>28–32 hours</b> from that point — that is when the cervix is truly open.
+    <br><span class="muted">Example: seen 10:06am Sep 13 → breed Sep 14, 2:06pm–6:06pm.</span></div>
+  <div class="sect-head"><h2>After A.I.</h2></div><div class="card small">
+    D18–21: first watch for reheat.<br>D40: second check.<br>D60: confirm — no reheat by now means she is truly pregnant.<br>
+    <b>D114:</b> farrowing.<br><span class="muted">If she reheats, the old record closes at once and a new one opens — no duplicates.</span></div>
+  <div class="sect-head"><h2>Piglets (21 days on the sow)</h2></div><div class="card small">
+    <b>D3</b> — Iron 1mL, antibiotic for wounds, teeth clip, ear notch, tail dock.<br>
+    <b>D7</b> — Multivitamins. Start Foster Milk and Baby 7 with Scourex until D15, then Baby 7 until D21.<br>
+    <b>D15</b> — 2nd Iron 1mL.<br>
+    <b>D21</b> — wean; Vit ADE for the piglets and <b>10mL Vit ADE for the sow</b>.</div>
+  <div class="sect-head"><h2>Nursery</h2></div><div class="card small">
+    Baby 7 + Foster Milk, with Scourex for 7 days.<br>
+    Allocation per <b>10 head</b>: 2 bags Baby 7, 2 packs Foster Milk, 7 sachets Scourex.</div>
+  <div class="sect-head"><h2>The sow after weaning</h2></div><div class="card small">
+    Wean + Vit ADE 10mL → <b>+3 days</b> deworm → <b>+5 to +7 days</b> she comes into heat.<br>
+    When she does, go back to counting 28–32 hours. Do not breed her the moment you see it, even on day 4 or 5 — follow the hours, not the day.</div>`;
+}
+function vData(){
+  if(role()!=='admin') return vMore();
+  const n=db.sows.length+db.cycles.length+db.farrowings.length+db.feeds.length+db.expenses.length;
+  return `<button class="backlink" onclick="go('more')">‹ More</button><h1>Backup and data</h1>
+  <div class="card"><div class="small">${n} records saved on this device.</div>
+  <hr class="sep"><button class="btn wide" onclick="exportJSON()">Download backup (.json)</button>
+  <div class="hint" style="margin-top:6px">Do this weekly. This is the file you carry to your other device.</div></div>
+  <div class="card"><b class="small">Import a backup</b>
+  <div class="small muted" style="margin:4px 0 8px">This replaces everything currently on this device.</div>
+  <input type="file" accept=".json" id="impFile" onchange="importJSON(this)"></div>
+  <div class="card"><b class="small">Export to Excel (CSV)</b>
+  <div class="row wrap" style="margin-top:8px">
+    <button class="btn ghost sm" onclick="csvSows()">Sows</button>
+    <button class="btn ghost sm" onclick="csvBreed()">Breeding</button>
+    <button class="btn ghost sm" onclick="csvMoney()">Money</button></div></div>
+  <div class="card"><button class="btn danger wide" onclick="wipe()">Erase everything</button></div>`;
+}
+function dl(name,text,type){
+  const b=new Blob([text],{type:type||'application/json'}), u=URL.createObjectURL(b);
+  const a=document.createElement('a'); a.href=u; a.download=name; document.body.appendChild(a); a.click();
+  setTimeout(()=>{URL.revokeObjectURL(u);a.remove();},900);
+}
+function exportJSON(){ dl('piggery-backup-'+todayISO()+'.json', JSON.stringify(db,null,1)); toast('Backup downloaded.'); }
+function importJSON(inp){
+  const f=inp.files[0]; if(!f) return;
+  const r=new FileReader();
+  r.onload=()=>{ try{ const d=JSON.parse(r.result);
+      if(!d.sows) throw 0;
+      confirmBox('Replace all data on this device?',()=>{ db=Object.assign(blank(),d); save(); go('dash'); toast('Imported.'); });
+    }catch(e){ toast('That file could not be read.'); } };
+  r.readAsText(f);
+}
+function csv(rows){ return rows.map(r=>r.map(c=>`"${String(c==null?'':c).replace(/"/g,'""')}"`).join(',')).join('\n'); }
+function csvSows(){
+  const rows=[['Eartag','Source','Breed','Born','Age','Parity','Status','Last farrowing']];
+  db.sows.forEach(s=>rows.push([s.tag,s.origin,s.breed,s.birth,ageTxt(s.birth),s.parity||0,sowState(s).label,s.lastFarrow||'']));
+  dl('sows-'+todayISO()+'.csv',csv(rows),'text/csv'); }
+function csvBreed(){
+  const rows=[['Eartag','Heat','A.I.','Boar','Status','Due','Farrowed','Live','Stillborn','Mummified','Crushed','Weaned']];
+  db.cycles.forEach(c=>{ const f=db.farrowings.find(x=>x.cycleId===c.id);
+    rows.push([tagOf(c.sowId),fdt(c.heatAt),c.aiAt?fdt(c.aiAt):'',c.boarId&&boarOf(c.boarId)?boarOf(c.boarId).tag:'',
+      c.status,c.dueDate||'',f?f.date:'',f?f.alive:'',f?f.still:'',f?f.mumi:'',f?(f.crushed||0):'',f&&f.weaned!=null?f.weaned:'']); });
+  dl('breeding-'+todayISO()+'.csv',csv(rows),'text/csv'); }
+function csvMoney(){
+  const rows=[['Date','Type','Details','Amount']];
+  db.feeds.forEach(x=>rows.push([x.date,'Feeds',x.feed+' · '+refLabel(x.ref)+' · '+x.bags+' bags',num(x.total)]));
+  db.expenses.forEach(x=>rows.push([x.date,x.cat,x.desc,num(x.amount)]));
+  db.payroll.forEach(x=>rows.push([x.date,'Wages',x.name+' · '+(x.period||''),num(x.net)]));
+  db.sales.forEach(x=>rows.push([x.date,'SALE',x.kind+' · '+(x.ref||''),num(x.amount)]));
+  rows.sort((a,b)=>String(a[0]).localeCompare(String(b[0])));
+  dl('kwarta-'+todayISO()+'.csv',csv([['Date','Type','Details','Amount']].concat(rows.slice(1))),'text/csv'); }
+function wipe(){ confirmBox('This erases ALL records. There is no undo. Do you have a backup?',()=>{
+  db=blank(); save(); go('dash'); toast('Everything cleared.'); }); }
+
+
+/* ============================================================
+   SIGN IN
+   ============================================================ */
+let LOGIN_PICK=null, LOGIN_ERR='';
+function vSetup(){
+  return `<div class="signin">
+  <img class="logo" src="logo.png" alt="" onerror="this.style.display='none'">
+  <h1>Set up the owner account</h1>
+  <div class="lead">You are the first person on this device, so this account becomes the Admin.
+  You can add your technician, caretakers and sales people right after.</div>
+  <div class="card">
+    <div class="field"><label for="su_name">Your name</label><input id="su_name" placeholder="e.g. Nonoy"></div>
+    <div class="field"><label for="su_farm">Piggery name</label><input id="su_farm" value="${esc(db.meta.farm)}"></div>
+    <div class="field"><label for="su_pin">Choose a 4-digit PIN</label>
+      <input id="su_pin" class="pinbox" type="password" inputmode="numeric" maxlength="6" placeholder="\u2022\u2022\u2022\u2022">
+      <div class="hint">You will type this every time you open the app.</div></div>
+    <button class="btn wide" onclick="doSetup()">Create the account</button>
+  </div>
+  <div class="card"><b class="small">Is the farm already set up on another phone?</b>
+    <div class="small muted" style="margin:4px 0 9px">Do not make a new account. Get the sync code from that
+    phone (More → Cloud sync → Copy the code) and paste it here. Everybody's names will appear by themselves.</div>
+    <button class="btn ghost wide" onclick="askJoin()">Join a farm that is already set up</button></div>
+  <div class="card small muted">The PIN keeps each person's work separate on a shared phone. It is not bank-level
+  security \u2014 anyone holding this device can still export the file.</div></div>`;
+}
+function doSetup(){
+  const n=$('su_name').value.trim(), f=$('su_farm').value.trim(), pin=$('su_pin').value.trim();
+  if(!n) return toast('Enter your name.');
+  if(pin.length<4) return toast('The PIN needs at least 4 digits.');
+  const id=uid('u');
+  db.users.push({id,name:n,role:'admin',pin:pinHash(pin,id),active:true,added:todayISO()});
+  if(f) db.meta.farm=f;
+  save(); signIn(userOf(id));
+}
+function vLogin(){
+  const list=db.users.filter(u=>u.active!==false);
+  if(!LOGIN_PICK){
+    return `<div class="signin">
+    <img class="logo" src="logo.png" alt="" onerror="this.style.display='none'">
+    <h1>${esc(db.meta.farm)}</h1>
+    <div class="lead">Tap your name to sign in.</div>
+    ${list.map(u=>`<button class="utile" onclick="pickUser('${u.id}')">
+      <div class="av">${esc((u.name[0]||'?').toUpperCase())}</div>
+      <div><div class="nm">${esc(u.name)}</div><div class="rl">${ROLE[u.role].label}</div></div></button>`).join('')}
+    <div style="text-align:center;margin-top:14px">
+      <button class="link" onclick="askReset()">Forgot your PIN?</button>
+      ${cloudOn()?'':' \u00b7 <button class="link" onclick="askJoin()">Connect this phone</button>'}</div>
+    </div>`;
+  }
+  const u=userOf(LOGIN_PICK);
+  return `<div class="signin"><button class="backlink" onclick="LOGIN_PICK=null;LOGIN_ERR='';render()">\u2039 Back</button>
+  <h1>${esc(u.name)}</h1><div class="lead">${ROLE[u.role].label}</div>
+  <div class="card">
+    <div class="field"><label for="pin">PIN</label>
+      <input id="pin" class="pinbox" type="password" inputmode="numeric" maxlength="6"
+        placeholder="\u2022\u2022\u2022\u2022" onkeydown="if(event.key==='Enter')doLogin()">
+      ${LOGIN_ERR?`<div class="hint" style="color:var(--alert)">${esc(LOGIN_ERR)}</div>`:''}</div>
+    <button class="btn wide" onclick="doLogin()">Sign in</button></div>
+  <div style="text-align:center"><button class="link" onclick="askReset()">Forgot this PIN?</button></div></div>`;
+}
+function pickUser(id){ LOGIN_PICK=id; LOGIN_ERR=''; render(); setTimeout(()=>{const e=$('pin'); if(e)e.focus();},60); }
+function doLogin(){
+  const u=userOf(LOGIN_PICK), pin=$('pin').value.trim();
+  if(!u) return;
+  if(pinHash(pin,u.id)!==u.pin){ LOGIN_ERR='Wrong PIN. Try again, or ask the admin to reset it.'; render();
+    setTimeout(()=>{const e=$('pin'); if(e)e.focus();},60); return; }
+  LOGIN_PICK=null; LOGIN_ERR=''; signIn(u);
+}
+function askReset(){
+  if(!db.users.length) return;
+  modal('Forgot a PIN','This sets a new PIN on this phone. Your records are not touched. The reset is written into the sign-in history, so the admin can see that it happened.',[
+    {k:'uid',label:'Which account',type:'select',req:true,
+      opts:db.users.map(u=>[u.id,u.name+' \u2014 '+ROLE[u.role].label])},
+    {k:'word',label:'Type RESET to confirm',req:true,ph:'RESET'},
+    {k:'a',label:'New PIN (4\u20136 digits)',type:'password',req:true},
+    {k:'b',label:'Type the new PIN again',type:'password',req:true}
+  ],'Set the new PIN',o=>{
+    if(String(o.word).trim().toUpperCase()!=='RESET') return toast('Type the word RESET to confirm.');
+    if(o.a.length<4) return toast('The PIN needs at least 4 digits.');
+    if(o.a!==o.b) return toast('The two PINs do not match.');
+    const u=userOf(o.uid); if(!u) return;
+    u.pin=pinHash(o.a,u.id); u.active=true;
+    db.logins.push({id:uid('li'),at:new Date().toISOString(),user:u.name,role:u.role,note:'PIN was reset on a device'});
+    save(); LOGIN_PICK=u.id; LOGIN_ERR=''; render();
+    toast('New PIN set. Sign in with it now.');
+    setTimeout(()=>{const e=$('pin'); if(e)e.focus();},80);
+  });
+}
+function accountMenu(){
+  if(!SESSION) return;
+  const u=userOf(SESSION.id);
+  $('modalHost').innerHTML=`<div class="modal-bg" onclick="if(event.target===this)closeModal()"><div class="modal">
+    <h2>${esc(SESSION.name)}</h2><div class="sub">${ROLE[role()].label} \u00b7 ${ROLE[role()].blurb}</div>
+    <div class="card tight small"><b>What you can do here</b>
+      <div class="muted" style="margin-top:4px">${myTabs().map(k=>TABMETA[k][0]).join(' \u00b7 ')}</div></div>
+    <button class="btn ghost wide" style="margin-bottom:8px" onclick="closeModal();changePin()">Change my PIN</button>
+    ${role()==='admin'?`<button class="btn ghost wide" style="margin-bottom:8px" onclick="closeModal();go('users')">People and sign-in</button>`:''}
+    <button class="btn wide" onclick="closeModal();signOut()">Sign out</button>
+    <div class="acts"><button class="btn ghost" onclick="closeModal()">Close</button></div></div></div>`;
+}
+function changePin(){
+  const u=userOf(SESSION.id);
+  modal('Change my PIN','',[
+    {k:'old',label:'Current PIN',type:'password',req:true},
+    {k:'a',label:'New PIN (4\u20136 digits)',type:'password',req:true},
+    {k:'b',label:'Type the new PIN again',type:'password',req:true}
+  ],'Save',o=>{
+    if(pinHash(o.old,u.id)!==u.pin) return toast('That is not your current PIN.');
+    if(o.a.length<4) return toast('The PIN needs at least 4 digits.');
+    if(o.a!==o.b) return toast('The two new PINs do not match.');
+    u.pin=pinHash(o.a,u.id); save(); toast('PIN changed.');
+  });
+}
+/* ---------- people and sign-in (admin) ---------- */
+function vUsers(){
+  if(role()!=='admin') return vMore();
+  let h=`<button class="backlink" onclick="go('more')">\u2039 More</button>
+   <div class="spread" style="margin-bottom:8px"><h1>People and sign-in</h1>
+   <button class="btn sm" onclick="askUser()">+ Person</button></div>
+   <div class="small muted" style="margin-bottom:10px">Everything a person records is stamped with their name,
+   so you can see who did what on the review page.</div>`;
+  h+=db.users.map(u=>{
+    const recs=countWork(u.name);
+    return `<button class="listitem" onclick="askUser('${u.id}')">
+      <div class="av" style="width:34px;height:34px;border-radius:9px;background:var(--ink);color:var(--tag);display:grid;place-items:center;font-weight:700">${esc((u.name[0]||'?').toUpperCase())}</div>
+      <div class="meta"><div class="l1">${esc(u.name)} ${u.active===false?'<span class="pill n">off</span>':''}
+        ${u.id===SESSION.id?'<span class="pill g">you</span>':''}</div>
+      <div class="l2">${ROLE[u.role].label} \u00b7 ${recs} records \u00b7 ${u.lastIn?'last in '+fshort(u.lastIn):'never signed in'}</div></div>
+      <span class="chev">\u203a</span></button>`;}).join('');
+  h+=`<div class="sect-head"><h2>What each role sees</h2></div><div class="card small">`;
+  h+=Object.entries(ROLE).map(([k,r])=>`<div style="padding:6px 0;border-bottom:1px solid var(--line-soft)">
+    <b>${r.label}</b><div class="muted tiny">${r.blurb}<br>Tabs: ${r.tabs.map(t=>TABMETA[t][0]).join(', ')}</div></div>`).join('');
+  h+=`</div>`;
+  return h;
+}
+function askUser(id){
+  const u=id?userOf(id):null;
+  const opts=Object.entries(ROLE).map(([k,r])=>[k,r.label]);
+  modal(u?'Edit '+u.name:'Add a person', u?'':'Give them their own PIN so their work is recorded under their name.',[
+    {k:'name',label:'Name',req:true,val:u?u.name:''},
+    {k:'role',label:'Role',type:'select',req:true,val:u?u.role:'caretaker',opts},
+    {k:'pin',label:u?'New PIN (leave blank to keep the old one)':'PIN (4\u20136 digits)',type:'password',val:''},
+    {k:'active',label:'Can sign in',type:'select',val:u?(u.active===false?'no':'yes'):'yes',opts:[['yes','Yes'],['no','No \u2014 turn the account off']]}
+  ],'Save',o=>{
+    if(u){
+      if(u.id===SESSION.id&&o.role!=='admin') return toast('You cannot remove your own admin role.');
+      if(u.id===SESSION.id&&o.active==='no') return toast('You cannot switch off your own account.');
+      u.name=o.name; u.role=o.role; u.active=o.active!=='no';
+      if(o.pin){ if(o.pin.length<4) return toast('The PIN needs at least 4 digits.'); u.pin=pinHash(o.pin,u.id); }
+      if(u.id===SESSION.id){ SESSION.name=u.name; db.meta.encoder=u.name; }
+    } else {
+      if(!o.pin||o.pin.length<4) return toast('Give them a PIN of at least 4 digits.');
+      const nid=uid('u');
+      db.users.push({id:nid,name:o.name,role:o.role,pin:pinHash(o.pin,nid),active:o.active!=='no',added:todayISO()});
+    }
+    save(); toast('Saved.'); render();
+  }, u&&u.id!==SESSION.id?`<div class="card tight" style="border-color:#EDC6BC">
+    <b class="small">Remove this account</b>
+    <div class="tiny muted" style="margin:3px 0 8px">Everything ${esc(u.name)} has recorded stays exactly where it is.
+    Only the sign-in is removed. Use this to clear duplicates.</div>
+    <button class="btn danger sm wide" onclick="closeModal();delUser('${u.id}')">Delete ${esc(u.name)}</button></div>`:'');
+}
+function delUser(id){
+  const u=userOf(id); if(!u) return;
+  if(SESSION&&u.id===SESSION.id) return toast('You cannot delete the account you are signed in with.');
+  const admins=db.users.filter(x=>x.role==='admin'&&x.active!==false&&x.id!==id);
+  if(u.role==='admin'&&!admins.length) return toast('This is the only admin left. Make another admin first.');
+  confirmBox('Delete the sign-in for '+u.name+'? Their records are not touched.',()=>{
+    db.users=db.users.filter(x=>x.id!==id); db.tombs.push(id);
+    save(); toast(u.name+' removed.'); render();
+  });
+}
+function countWork(name){
+  let n=0;
+  db.cycles.forEach(c=>{ if(c.by===name) n++; (c.ais||[]).forEach(a=>{ if(a.by===name) n++; });
+    (c.checks||[]).forEach(x=>{ if(x.by===name) n++; }); });
+  [db.farrowings,db.feeds,db.expenses,db.sales,db.health,db.flogs,db.payroll].forEach(arr=>
+    arr.forEach(x=>{ if(x.by===name) n++; }));
+  db.tasks.forEach(t=>{ if(t.done&&t.by===name) n++; });
+  return n;
+}
+
+/* ============================================================
+   VIEW: HEALTH \u2014 sick pigs and treatments
+   ============================================================ */
+const HSTATUS={open:['Under treatment','w'],watch:['Watching','n'],recovered:['Recovered','g'],
+  died:['Died','r'],culled:['Culled','r']};
+function vHealth(){
+  const open=db.health.filter(c=>c.status==='open'||c.status==='watch')
+    .sort((a,b)=>b.date.localeCompare(a.date));
+  const closed=db.health.filter(c=>!['open','watch'].includes(c.status))
+    .sort((a,b)=>b.date.localeCompare(a.date)).slice(0,20);
+  let h=`<div class="spread" style="margin-bottom:8px"><h1>Health</h1>
+    <button class="btn sm" onclick="askCase()">+ Sick pig</button></div>
+    <div class="small muted" style="margin-bottom:10px">Report anything you treat: sow, piglet, or a fattening pen.
+    The app schedules the follow-up and the end of the withdrawal period.</div>`;
+  const wd=db.health.filter(c=>c.wdEnd&&fromToday(c.wdEnd)>=0);
+  if(wd.length) h+=`<div class="card tight" style="background:var(--warn-bg);border-color:#EDD9AC">
+    <b class="small">Do not sell or slaughter yet</b>
+    ${wd.map(c=>`<div class="tiny">${esc(c.tag||refLabel(c.kind))} \u00b7 ${esc(c.med||'treatment')} \u00b7 clear on ${fshort(c.wdEnd)}</div>`).join('')}</div>`;
+  h+=`<div class="sect-head"><h2>Open cases</h2><span class="count">${open.length}</span></div>`;
+  h+= open.length? open.map(caseLine).join('')
+    : emptyBox('No sick pigs on the list','Good news. If you find one, report it here so the treatment and the withdrawal period are tracked.','Report a sick pig','askCase()');
+  if(closed.length){
+    h+=`<div class="sect-head"><h2>Closed</h2></div>`+closed.map(caseLine).join('');
+  }
+  return h;
+}
+function caseLine(c){
+  const st=HSTATUS[c.status]||HSTATUS.open;
+  return `<button class="listitem" onclick="go('case','${c.id}')">
+    <div class="meta"><div class="l1">${esc(c.tag||'\u2014')} <span class="pill ${st[1]}">${st[0]}</span></div>
+    <div class="l2">${fshort(c.date)} \u00b7 ${esc(c.diagnosis||c.symptoms||'')} \u00b7 ${esc(c.by||'')}</div></div>
+    <span class="chev">\u203a</span></button>`;
+}
+function vCase(){
+  const c=db.health.find(x=>x.id===SUB); if(!c) return vHealth();
+  const st=HSTATUS[c.status]||HSTATUS.open;
+  const tasks=db.tasks.filter(t=>t.ref===c.id).sort((a,b)=>a.date.localeCompare(b.date));
+  let h=`<button class="backlink" onclick="go('health')">\u2039 Health</button>
+  <div class="card"><div class="spread"><h2>${esc(c.tag||'\u2014')}</h2><span class="pill ${st[1]}">${st[0]}</span></div>
+  <div class="small muted">${esc(({sow:'Sow',piglet:'Piglet / litter',fattening:'Fattening',boar:'Boar'})[c.kind]||c.kind)}
+   \u00b7 reported ${fdate(c.date)} by ${esc(c.by||'')}</div>
+  <hr class="sep"><div class="grid2 small">
+    <div><span class="muted">Signs:</span> ${esc(c.symptoms||'\u2014')}</div>
+    <div><span class="muted">Temperature:</span> ${c.temp?c.temp+'\u00b0C':'\u2014'}</div>
+    <div><span class="muted">Diagnosis:</span> ${esc(c.diagnosis||'\u2014')}</div>
+    <div><span class="muted">Medicine:</span> ${esc(c.med||'\u2014')}</div>
+    <div><span class="muted">Dose:</span> ${esc(c.dose||'\u2014')}</div>
+    <div><span class="muted">Days of treatment:</span> ${c.days||'\u2014'}</div>
+    <div><span class="muted">Withdrawal ends:</span> ${c.wdEnd?fdate(c.wdEnd):'\u2014'}</div>
+    <div><span class="muted">Head affected:</span> ${c.heads||1}</div>
+  </div>${c.note?`<hr class="sep"><div class="small">${esc(c.note)}</div>`:''}</div>`;
+  if(tasks.length) h+=`<div class="sect-head"><h2>Follow-up</h2></div><div class="card">${tasks.map(taskLine).join('')}</div>`;
+  if(c.logs&&c.logs.length) h+=`<div class="sect-head"><h2>Progress</h2></div><div class="card tight">
+    ${c.logs.slice().reverse().map(l=>`<div style="padding:7px 0;border-bottom:1px solid var(--line-soft)">
+      <div class="spread"><b class="small">${fshort(l.date)}</b><span class="tiny muted">${esc(l.by||'')}</span></div>
+      <div class="small">${esc(l.note)}</div></div>`).join('')}</div>`;
+  if(['open','watch'].includes(c.status)) h+=`<div class="grid2">
+    <button class="btn" onclick="askCaseNote('${c.id}')">Add an update</button>
+    <button class="btn ghost" onclick="askCaseClose('${c.id}')">Close the case</button></div>`;
+  return h;
+}
+function askCase(){
+  const sows=db.sows.filter(x=>x.status!=='CULL').map(x=>['sow:'+x.id,'Sow '+x.tag]);
+  const bats=db.fatten.filter(b=>b.status==='open').map(b=>['fat:'+b.id,'Fattening '+b.code]);
+  const lits=db.farrowings.filter(f=>!f.weanDate).map(f=>['lit:'+f.id,'Litter of '+tagOf(f.sowId)]);
+  modal('Report a sick pig','Fill in what you can see now. The treatment part can be added later by the technician.',[
+    {k:'target',label:'Which pig or group',type:'select',req:true,
+      opts:[['','\u2014 choose \u2014']].concat(sows,lits,bats,[['other','Other \u2014 type it below']])},
+    {k:'other',label:'If other, write the tag or pen',val:''},
+    {k:'heads',label:'How many head affected',type:'number',val:1,min:1},
+    {k:'date',label:'Date noticed',type:'date',req:true,val:todayISO()},
+    {k:'symptoms',label:'What you see',req:true,ph:'off feed, coughing, lame, scours, red skin\u2026'},
+    {k:'temp',label:'Temperature \u00b0C (if taken)',type:'number',val:''},
+    {k:'diagnosis',label:'Diagnosis (if known)',val:''},
+    {k:'med',label:'Medicine given',val:''},
+    {k:'dose',label:'Dose and route',val:'',ph:'e.g. 5mL IM'},
+    {k:'days',label:'Days of treatment',type:'number',val:3,min:1},
+    {k:'wd',label:'Withdrawal period (days)',type:'number',val:0,min:0,
+      hint:'Days before this pig may be sold or slaughtered. Check the medicine label.'},
+    {k:'note',label:'Notes',type:'textarea',val:''}
+  ],'Save the case',o=>{
+    let kind='other', ref='', tag=o.other||'';
+    if(o.target.startsWith('sow:')){ kind='sow'; ref=o.target.slice(4); tag='Sow '+tagOf(ref); }
+    else if(o.target.startsWith('fat:')){ kind='fattening'; ref=o.target.slice(4);
+      const b=db.fatten.find(x=>x.id===ref); tag='Fattening '+(b?b.code:''); }
+    else if(o.target.startsWith('lit:')){ kind='piglet'; ref=o.target.slice(4); tag='Litter of '+tagOf((db.farrowings.find(f=>f.id===ref)||{}).sowId); }
+    if(!tag) return toast('Name the pig or pen.');
+    const c={id:uid('h'),kind,ref,tag,heads:num(o.heads)||1,date:o.date,symptoms:o.symptoms,temp:o.temp,
+      diagnosis:o.diagnosis,med:o.med,dose:o.dose,days:num(o.days)||1,wd:num(o.wd),
+      wdEnd:num(o.wd)?addD(o.date,num(o.days||1)+num(o.wd)):null,
+      status:'open',note:o.note,by:who(),logs:[]};
+    db.health.push(c);
+    addTask({kind:'HLT',ref:c.id,date:addD(o.date,1),group:'health',title:'Check '+tag,
+      detail:'Day 2 of treatment \u2014 better, the same, or worse?'});
+    addTask({kind:'HLT2',ref:c.id,date:addD(o.date,num(o.days)||1),group:'health',title:'Last day of treatment \u2014 '+tag,
+      detail:(o.med?o.med+'. ':'')+'Decide: recovered, keep treating, or cull.'});
+    if(c.wdEnd) addTask({kind:'WDL',ref:c.id,date:c.wdEnd,group:'health',title:'Withdrawal ends \u2014 '+tag,
+      detail:'Safe to sell or slaughter from this date.'});
+    save(); toast('Case recorded.'); go('case',c.id);
+  });
+}
+function askCaseNote(id){
+  const c=db.health.find(x=>x.id===id);
+  modal('Update on '+c.tag,'',[
+    {k:'date',label:'Date',type:'date',req:true,val:todayISO()},
+    {k:'note',label:'How is she doing',req:true,type:'textarea'}
+  ],'Save',o=>{ (c.logs=c.logs||[]).push({date:o.date,note:o.note,by:who()}); save(); toast('Saved.'); render(); });
+}
+function askCaseClose(id){
+  const c=db.health.find(x=>x.id===id);
+  modal('Close the case \u2014 '+c.tag,'',[
+    {k:'status',label:'Outcome',type:'select',req:true,
+      opts:[['recovered','Recovered'],['watch','Still watching'],['died','Died'],['culled','Culled / sold off']]},
+    {k:'date',label:'Date',type:'date',req:true,val:todayISO()},
+    {k:'note',label:'Notes',val:''}
+  ],'Save',o=>{
+    c.status=o.status; c.closedAt=o.date; c.closeNote=o.note; c.closedBy=who();
+    (c.logs=c.logs||[]).push({date:o.date,note:(HSTATUS[o.status]||['closed'])[0]+(o.note?' \u2014 '+o.note:''),by:who()});
+    if(o.status!=='watch') dropTasks(t=>t.ref===c.id&&t.kind!=='WDL');
+    if(o.status==='died'&&c.kind==='fattening'){ const b=db.fatten.find(x=>x.id===c.ref); if(b) b.dead=(b.dead||0)+(c.heads||1); }
+    save(); toast('Case closed.'); go('health');
+  });
+}
+
+/* ============================================================
+   VIEW: OPERATIONS REVIEW (admin / manager)
+   ============================================================ */
+function vReview(){
+  if(!can('review')) return vDash();
+  const cyc=db.cycles.filter(c=>c.aiAt);
+  let onTime=0, late=0;
+  cyc.forEach(c=>{ const w=aiWindow(c.heatAt), t=new Date(c.aiAt).getTime();
+    if(t>=new Date(w.from).getTime()-30*60000 && t<=new Date(w.to).getTime()+30*60000) onTime++; else late++; });
+  const closed=db.cycles.filter(c=>['REHEAT','FARROWED'].includes(c.status)&&c.aiAt);
+  const farrowed=closed.filter(c=>c.status==='FARROWED').length;
+  const rate=closed.length?Math.round(farrowed/closed.length*100):null;
+  const fs=db.farrowings;
+  const born=fs.reduce((a,f)=>a+f.alive+f.still+f.mumi,0), alive=fs.reduce((a,f)=>a+f.alive,0);
+  const crushed=fs.reduce((a,f)=>a+(f.crushed||0),0);
+  const byWhy={};
+  fs.forEach(f=>(f.deaths||[]).forEach(x=>{ byWhy[x.why||'Not known']=(byWhy[x.why||'Not known']||0)+x.n; }));
+  const early=fs.reduce((a,f)=>a+(f.deaths||[]).filter(x=>x.day!=null&&x.day<=3).reduce((b,x)=>b+x.n,0),0);
+  const preWean=alive?Math.round(crushed/alive*1000)/10:0;
+  const overdue=db.tasks.filter(t=>!t.done&&fromToday(t.date)<0);
+  const pct=n=>n==null?'\u2014':n+'%';
+  let h=`<button class="backlink" onclick="go('more')">\u2039 More</button><h1>Operations review</h1>
+  <div class="small muted" style="margin-bottom:10px">Everything below is worked out from what your people entered.</div>
+  <div class="grid3" style="margin-bottom:9px">
+    <div class="stat"><b class="num">${pct(cyc.length?Math.round(onTime/cyc.length*100):null)}</b><span>A.I. inside the 28\u201332h window</span></div>
+    <div class="stat"><b class="num">${pct(rate)}</b><span>Farrowing rate</span></div>
+    <div class="stat"><b class="num">${fs.length?Math.round(alive/fs.length*10)/10:'\u2014'}</b><span>Born alive per litter</span></div>
+    <div class="stat"><b class="num">${fs.length?Math.round(born/fs.length*10)/10:'\u2014'}</b><span>Total born per litter</span></div>
+    <div class="stat"><b class="num">${preWean}%</b><span>Pre-weaning losses</span></div>
+    <div class="stat"><b class="num">${overdue.length}</b><span>Overdue tasks</span></div>
+  </div>`;
+
+  // what to improve
+  const tips=[];
+  if(cyc.length>=3&&onTime/cyc.length<0.8) tips.push(['A.I. timing is slipping',
+    late+' of '+cyc.length+' services were outside the 28\u201332 hour window. Every hour off costs you piglets. Ask the technician to log the heat time the moment it is seen.']);
+  if(rate!=null&&closed.length>=4&&rate<80) tips.push(['Farrowing rate below 80%',
+    'Look at semen handling, the age of the dose, and whether sows are bred twice. Check the boar used in the failed services.']);
+  if(preWean>12) tips.push(['Pre-weaning losses are high',
+    preWean+'% of live-born piglets are lost before weaning. Most of it is crushing in the first three days \u2014 check the creep heat, the farrowing crates, and night supervision.']);
+  if(overdue.length>4) tips.push(['Work is piling up',
+    overdue.length+' tasks are past their date. Injections and checks on a fixed day do not wait. Go through them with the person responsible.']);
+  const skipped=db.cycles.filter(c=>c.status==='HEAT'&&aiState(c.heatAt).s==='late'&&fromToday(todayISO(c.heatAt))<-2).length;
+  if(skipped) tips.push(['Heats recorded but never bred',
+    skipped+' sow(s) were seen in heat and no A.I. was ever recorded. Each missed heat is 21 empty days.']);
+  const noDate=db.sows.filter(x=>!x.birth&&x.status!=='CULL').length;
+  if(noDate) tips.push(['Missing birth dates',noDate+' sow(s) have no birth date, so the 7-month gilt rule cannot be checked for them.']);
+  const whys=Object.entries(byWhy).sort((a,b)=>b[1]-a[1]);
+  if(whys.length) h+=`<div class="sect-head"><h2>Why piglets are lost</h2></div><div class="card tight">
+    <table class="tbl"><tr><th>Reason</th><th class="n">Head</th><th class="n">Share</th></tr>
+    ${whys.map(([k,v])=>`<tr><td>${esc(k)}</td><td class="n">${v}</td>
+      <td class="n">${crushed?Math.round(v/crushed*100):0}%</td></tr>`).join('')}</table>
+    ${early?`<div class="tiny muted" style="margin-top:6px">${early} of them died in the first three days.</div>`:''}</div>`;
+  h+=`<div class="sect-head"><h2>What to improve</h2></div>`;
+  h+= tips.length? tips.map(([t,d])=>`<div class="card tight" style="border-left:3px solid var(--alert)">
+      <b class="small">${t}</b><div class="small muted">${d}</div></div>`).join('')
+    : `<div class="card"><div class="empty"><b>Nothing standing out.</b>Timing, farrowing rate and losses are all inside normal range.</div></div>`;
+
+  // per person
+  h+=`<div class="sect-head"><h2>Your people</h2></div><div class="card tight scrollx"><table class="tbl">
+    <tr><th>Name</th><th>Role</th><th class="n">Records</th><th class="n">Done</th><th class="n">Overdue</th></tr>`;
+  h+=db.users.map(u=>{
+    const g=ROLE[u.role].groups;
+    const mine=t=>g==='*'||g===''||(Array.isArray(g)&&g.includes(t.group||'sow'));
+    const od=overdue.filter(mine).length;
+    const done=db.tasks.filter(t=>t.done&&t.by===u.name).length;
+    return `<tr><td>${esc(u.name)}${u.active===false?' <span class="pill n">off</span>':''}</td>
+      <td>${ROLE[u.role].label.split(' ')[0]}</td><td class="n">${countWork(u.name)}</td>
+      <td class="n">${done}</td><td class="n">${ROLE[u.role].groups===''?'\u2014':od}</td></tr>`;}).join('');
+  h+=`</table><div class="tiny muted" style="margin-top:6px">Overdue is counted for the whole area a person covers, not blame for one person.</div></div>`;
+
+  // overdue detail
+  if(overdue.length){
+    h+=`<div class="sect-head"><h2>Past their date</h2></div><div class="card">
+      ${overdue.sort((a,b)=>a.date.localeCompare(b.date)).slice(0,12).map(t=>
+        `<div class="task late"><div class="when">${whenTxt(t.date)}<br><span style="font-weight:500;color:#8B9A89">${fshort(t.date)}</span></div>
+        <div class="body"><div class="t">${esc(t.title)}</div><div class="d">${esc(t.detail||'')}</div></div></div>`).join('')}</div>`;
+  }
+  // money per pig
+  if(can('money')){
+    const feedCost=db.feeds.reduce((a,x)=>a+num(x.total),0);
+    const sold=db.sales.reduce((a,x)=>a+num(x.heads||0),0);
+    const income=db.sales.reduce((a,x)=>a+num(x.amount),0);
+    const spend=feedCost+db.expenses.reduce((a,x)=>a+num(x.amount),0)+db.payroll.reduce((a,x)=>a+num(x.net),0);
+    h+=`<div class="sect-head"><h2>Money, all time</h2></div><div class="card">
+      <div class="spread small"><span class="muted">Total spent</span><b class="money">${peso(spend)}</b></div>
+      <div class="spread small"><span class="muted">Total sales</span><b class="money">${peso(income)}</b></div>
+      <div class="spread small"><span class="muted">Feed share of spending</span><b>${spend?Math.round(feedCost/spend*100):0}%</b></div>
+      <div class="spread small"><span class="muted">Sold</span><b>${sold} head</b></div>
+      <hr class="sep"><div class="spread"><b>Balance</b>
+      <b class="money" style="color:${income-spend>=0?'var(--good)':'var(--alert)'}">${peso(income-spend)}</b></div></div>`;
+  }
+  // sign-in history
+  const li=db.logins.slice(-8).reverse();
+  if(li.length) h+=`<div class="sect-head"><h2>Recent sign-ins</h2></div><div class="card tight">
+    ${li.map(l=>`<div class="spread small" style="padding:5px 0"><span>${esc(l.user)}${l.note?' <span class="pill w">'+esc(l.note)+'</span>':''}</span>
+    <span class="muted tiny">${fshort(l.at)} ${ftime(l.at)}</span></div>`).join('')}</div>`;
+  return h;
+}
+
+/* ---------- quick actions per role ---------- */
+function quickActions(){
+  const b=[];
+  if(can('breed')){ b.push(['btn','askHeat()','Sow in heat']); b.push(['btn ghost','askFarrow()','Farrowed']); }
+  if(can('health')) b.push(['btn ghost','askCase()','Sick pig']);
+  if(can('feeds')) b.push(['btn ghost','askFeed()','Feeds used']);
+  if(can('money')) b.push(['btn ghost','askExpense()','Expense']);
+  if(can('sales')&&!can('money')) b.push(['btn','askSale()','Record a sale']);
+  if(!b.length) return '';
+  return `<div class="grid2" style="margin-bottom:11px">`+
+    b.map(([c,f,l])=>`<button class="${c}" onclick="${f}">${l}</button>`).join('')+`</div>`;
+}
+
+/* ============================================================
+   CLOUD SYNC (Supabase REST \u2014 no extra library needed)
+   Every device keeps its own copy and works offline. When there
+   is signal, the copies are merged so nobody loses an entry.
+   ============================================================ */
+const CKEY='piggery_cloud';
+const SYNCABLE=['users','health','logins','sows','boars','cycles','farrowings','tasks',
+  'nursery','fatten','flogs','feeds','expenses','workers','payroll','sales','notes'];
+let CLOUD=null, SYNC={s:'off',msg:'Not connected',at:null}, syncTimer=null, syncing=false;
+
+function loadCloud(){ try{ const r=localStorage.getItem(CKEY); if(r) CLOUD=JSON.parse(r); }catch(e){} }
+function storeCloud(){ try{ CLOUD?localStorage.setItem(CKEY,JSON.stringify(CLOUD)):localStorage.removeItem(CKEY); }catch(e){} }
+function cloudOn(){ return !!(CLOUD&&CLOUD.url&&CLOUD.key&&CLOUD.farm); }
+function syncChip(){
+  const b=$('syncBtn'); if(!b) return;
+  b.className='synced'+(SYNC.s==='ok'?' ok':SYNC.s==='bad'?' bad':SYNC.s==='busy'?' busy':'');
+  b.textContent = SYNC.s==='ok'?'\u25cf':SYNC.s==='busy'?'\u25cc':SYNC.s==='bad'?'!':'\u25cb';
+  b.title = SYNC.msg;
+}
+function setSync(st,msg){ SYNC.s=st; SYNC.msg=msg; if(st==='ok') SYNC.at=new Date().toISOString(); syncChip(); }
+async function api(path,opts){
+  const base=CLOUD.url.replace(/\/+$/,'');
+  const r=await fetch(base+'/rest/v1/'+path, Object.assign({
+    headers:{apikey:CLOUD.key, Authorization:'Bearer '+CLOUD.key,
+      'Content-Type':'application/json', Prefer:'return=representation'}}, opts||{}));
+  const txt=await r.text();
+  if(!r.ok) throw new Error('HTTP '+r.status+' '+txt.slice(0,140));
+  return txt?JSON.parse(txt):null;
+}
+function mergeDB(local, remote, remoteNewer){
+  const out=Object.assign({},local);
+  out.meta = remoteNewer ? Object.assign({},local.meta,remote.meta||{}) : Object.assign({},remote.meta||{},local.meta);
+  const tombs=new Set((local.tombs||[]).concat(remote.tombs||[]));
+  SYNCABLE.forEach(k=>{
+    const first = remoteNewer ? (local[k]||[]) : (remote[k]||[]);
+    const second= remoteNewer ? (remote[k]||[]) : (local[k]||[]);
+    const map=new Map();
+    first.concat(second).forEach(x=>{ if(x&&x.id&&!tombs.has(x.id)) map.set(x.id,x); });
+    out[k]=[...map.values()];
+  });
+  out.tasks=(out.tasks||[]).filter(t=>!tombs.has(t.key));
+  out.tombs=[...tombs].slice(-4000);
+  if(out.logins&&out.logins.length>300) out.logins=out.logins.slice(-300);
+  return out;
+}
+function queueSync(){
+  if(!cloudOn()) return;
+  clearTimeout(syncTimer);
+  syncTimer=setTimeout(()=>syncNow(true), 3500);
+}
+async function syncNow(silent){
+  if(!cloudOn()||syncing) return;
+  if(typeof navigator!=='undefined'&&navigator.onLine===false){ setSync('bad','No signal \u2014 will sync later'); return; }
+  syncing=true; setSync('busy','Syncing\u2026');
+  try{
+    const rows=await api('farm_state?id=eq.'+encodeURIComponent(CLOUD.farm)+'&select=rev,data,updated_at,updated_by');
+    const row=rows&&rows[0];
+    let rev=CLOUD.rev||0, changed=!row;
+    if(row){
+      if(row.rev!==CLOUD.rev){                       // somebody else wrote since our last sync
+        db=mergeDB(db, row.data||{}, true);
+        changed=true;
+      }
+      rev=row.rev;
+    }
+    if(changed||CLOUD.dirty){
+      const body=[{id:CLOUD.farm, rev:rev+1, data:db, updated_at:new Date().toISOString(),
+        updated_by:(SESSION?SESSION.name:'device')}];
+      const saved=await api('farm_state?on_conflict=id',{method:'POST',
+        headers:{apikey:CLOUD.key,Authorization:'Bearer '+CLOUD.key,'Content-Type':'application/json',
+          Prefer:'resolution=merge-duplicates,return=representation'},body:JSON.stringify(body)});
+      CLOUD.rev=(saved&&saved[0]?saved[0].rev:rev+1);
+    } else CLOUD.rev=rev;
+    CLOUD.dirty=false; CLOUD.lastAt=new Date().toISOString(); storeCloud();
+    try{ localStorage.setItem(KEY,JSON.stringify(db)); }catch(e){}
+    setSync('ok','Synced '+ftime(CLOUD.lastAt));
+    if(!silent) toast('Everything is in step.');
+    if(SESSION||!db.users.length) render();
+  }catch(e){
+    setSync('bad','Sync problem: '+e.message);
+    if(!silent) toast('Sync failed. '+e.message);
+  }finally{ syncing=false; }
+}
+function syncCode(){
+  if(!cloudOn()) return '';
+  try{ return btoa(JSON.stringify({u:CLOUD.url,k:CLOUD.key,f:CLOUD.farm})); }catch(e){ return ''; }
+}
+function connectCloud(url,key,farm){
+  CLOUD={url:url.trim(),key:key.trim(),farm:(farm||('farm_'+uid('')+uid(''))).trim(),rev:0,dirty:true};
+  storeCloud(); syncNow(); 
+}
+function vCloud(){
+  const on=cloudOn();
+  let h=`<button class="backlink" onclick="go('more')">\u2039 More</button><h1>Cloud sync</h1>
+  <div class="small muted" style="margin-bottom:10px">Keeps every phone on the same records. Each phone still
+  works with no signal and catches up later.</div>`;
+  if(on){
+    h+=`<div class="card"><div class="spread"><div><b>Connected</b>
+      <div class="small muted">${esc(SYNC.msg)}</div></div>
+      <button class="btn sm" onclick="syncNow()">Sync now</button></div>
+      <hr class="sep">
+      <div class="small"><span class="muted">Farm code:</span> ${esc(CLOUD.farm)}</div>
+      <div class="small"><span class="muted">Last change by:</span> ${esc((db.meta&&db.meta.encoder)||'\u2014')}</div>
+    </div>
+    <div class="card"><b class="small">Add another phone</b>
+      <div class="small muted" style="margin:4px 0 8px">Open this same web address on the other phone, go to
+      More \u2192 Cloud sync \u2192 Paste a sync code, and paste the code below. Keep it private \u2014 anyone with it
+      can read your records.</div>
+      <div class="code" id="scode">${esc(syncCode())}</div>
+      <div class="row" style="margin-top:8px">
+        <button class="btn sm" onclick="copyCode()">Copy the code</button>
+        <button class="btn ghost sm" onclick="disconnectCloud()">Disconnect this phone</button></div></div>`;
+  } else {
+    h+=`<div class="card"><b class="small">This phone is not connected</b>
+      <div class="small muted" style="margin:4px 0 10px">Records stay on this phone only.</div>
+      <button class="btn wide" style="margin-bottom:8px" onclick="askJoin()">Paste a sync code</button>
+      <button class="btn ghost wide" onclick="askCloudSetup()">Set up the first connection</button></div>
+    <div class="card small"><b>How the first connection is made</b>
+      <div class="muted" style="margin-top:5px">Make a free project at supabase.com, open the SQL editor,
+      run the few lines in the setup screen, then copy the Project URL and the anon key into this app.
+      One phone does this once; the rest just paste the sync code.</div></div>`;
+  }
+  return h;
+}
+function copyCode(){
+  const t=syncCode();
+  if(navigator.clipboard){ navigator.clipboard.writeText(t).then(()=>toast('Code copied.'),()=>toast('Press and hold the code to copy.')); }
+  else toast('Press and hold the code to copy.');
+}
+function disconnectCloud(){
+  confirmBox('Stop syncing on this phone? The records already here stay.',()=>{
+    CLOUD=null; storeCloud(); setSync('off','Not connected'); toast('Disconnected.'); render(); });
+}
+function askJoin(){
+  modal('Paste a sync code','Get this from the phone that is already connected: More \u2192 Cloud sync.',
+   [{k:'c',label:'Sync code',type:'textarea',req:true,ph:'a long line of letters and numbers'}],
+   'Connect',o=>{
+     let d=null; try{ d=JSON.parse(atob(o.c.trim())); }catch(e){}
+     if(!d||!d.u||!d.k||!d.f) return toast('That code is not readable. Copy the whole line.');
+     connectCloud(d.u,d.k,d.f);
+     toast('Connecting\u2026');
+     if(SESSION) go('cloud'); else { LOGIN_PICK=null; render(); }
+   });
+}
+function askCloudSetup(){
+  const sql='create table if not exists farm_state (\n'+
+    '  id text primary key,\n  rev int default 0,\n  data jsonb,\n'+
+    '  updated_at timestamptz default now(),\n  updated_by text\n);\n'+
+    'alter table farm_state enable row level security;\n'+
+    'create policy farm_rw on farm_state for all to anon using (true) with check (true);';
+  modal('Connect to Supabase','Do this once, on one phone. The other phones only need the sync code afterwards.',[
+    {k:'url',label:'Project URL',req:true,ph:'https://abcdefgh.supabase.co',
+     hint:'Supabase \u2192 Project settings \u2192 Data API'},
+    {k:'key',label:'anon public key',req:true,ph:'eyJhbGciOi\u2026',
+     hint:'The same page, under Project API keys. Use the anon key, never the service key.'},
+    {k:'farm',label:'Farm code',val:'farm_'+uid('')+uid(''),
+     hint:'A private name for your records. Anyone holding this plus the key can read them, so keep it long.'}
+  ],'Connect',o=>{ connectCloud(o.url,o.key,o.farm); toast('Connecting\u2026'); go('cloud'); },
+  `<div class="card tight"><b class="small">1. Run this in the Supabase SQL editor</b>
+   <div class="code" style="margin-top:6px">${esc(sql)}</div></div>`);
+}
+/* ============================================================ */
+document.addEventListener('keydown',e=>{ if(e.key==='Escape'&&MODAL) closeModal(); });
+$('encoderBtn').onclick=accountMenu;
+$('syncBtn').onclick=()=>{ if(cloudOn()) syncNow(); else { if(SESSION) go('cloud'); else toast('Sign in first.'); } };
+if(typeof document!=='undefined'&&document.addEventListener){
+  document.addEventListener('visibilitychange',()=>{ if(!document.hidden) syncNow(true); });
+}
+setInterval(()=>syncNow(true), 90000);
+try{ if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{}); }catch(e){}
+load().then(()=>{ loadCloud(); restoreSession(); render(); syncChip();
+  if(cloudOn()){ setSync('busy','Syncing…'); syncNow(true); } });
+
+</script>
+</body>
+</html>
