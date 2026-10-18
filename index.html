@@ -319,6 +319,7 @@ let saveTimer=null;
 function save(){
   clearTimeout(saveTimer);
   saveTimer=setTimeout(async()=>{
+    stampChanges();
     const s=JSON.stringify(db);
     try{ if(window.storage) await window.storage.set(KEY,s); }catch(e){}
     try{ localStorage.setItem(KEY,s); }catch(e){}
@@ -3122,6 +3123,20 @@ function bioForget(){
 const CKEY='piggery_cloud';
 const SYNCABLE=['users','health','logins','collections','items','sows','boars','cycles','farrowings','tasks',
   'nursery','fatten','flogs','feeds','expenses','workers','payroll','sales','notes'];
+let SNAP={};                       // id -> what the record looked like at the last save
+function recHash(r){ const m=r._m; delete r._m; const h=JSON.stringify(r); if(m) r._m=m; return h; }
+function seedSnap(){                 // remember the current shape without claiming we wrote it
+  SNAP={}; SYNCABLE.forEach(k=>(db[k]||[]).forEach(r=>{ if(r&&r.id) SNAP[r.id]=recHash(r); }));
+}
+function stampChanges(){             // mark only the records this device actually changed
+  const now=new Date().toISOString(); let any=false;
+  SYNCABLE.forEach(k=>(db[k]||[]).forEach(r=>{
+    if(!r||!r.id) return;
+    const h=recHash(r);
+    if(SNAP[r.id]!==h){ SNAP[r.id]=h; r._m=now; any=true; }
+  }));
+  return any;
+}
 let CLOUD=null, SYNC={s:'off',msg:'Not connected',at:null}, syncTimer=null, syncing=false;
 
 function loadCloud(){ try{ const r=localStorage.getItem(CKEY); if(r) CLOUD=JSON.parse(r); }catch(e){} }
@@ -3143,20 +3158,30 @@ async function api(path,opts){
   if(!r.ok) throw new Error('HTTP '+r.status+' '+txt.slice(0,140));
   return txt?JSON.parse(txt):null;
 }
+function pickRec(mine, theirs, remoteNewer){
+  const a=mine&&mine._m, b=theirs&&theirs._m;
+  if(a&&b) return a>=b ? mine : theirs;      // whoever wrote last wins, record by record
+  if(a&&!b) return mine;                     // only one side touched it \u2014 that side wins
+  if(b&&!a) return theirs;
+  return remoteNewer ? theirs : mine;        // neither stamped (old records): fall back
+}
 function mergeDB(local, remote, remoteNewer){
   const out=Object.assign({},local);
   out.meta = remoteNewer ? Object.assign({},local.meta,remote.meta||{}) : Object.assign({},remote.meta||{},local.meta);
   const tombs=new Set((local.tombs||[]).concat(remote.tombs||[]));
   SYNCABLE.forEach(k=>{
-    const first = remoteNewer ? (local[k]||[]) : (remote[k]||[]);
-    const second= remoteNewer ? (remote[k]||[]) : (local[k]||[]);
     const map=new Map();
-    first.concat(second).forEach(x=>{ if(x&&x.id&&!tombs.has(x.id)) map.set(x.id,x); });
+    (local[k]||[]).forEach(x=>{ if(x&&x.id&&!tombs.has(x.id)) map.set(x.id,x); });
+    (remote[k]||[]).forEach(x=>{
+      if(!x||!x.id||tombs.has(x.id)) return;
+      const cur=map.get(x.id);
+      map.set(x.id, cur ? pickRec(cur,x,remoteNewer) : x);
+    });
     out[k]=[...map.values()];
   });
   out.tasks=(out.tasks||[]).filter(t=>!tombs.has(t.key));
-  out.tombs=[...tombs].slice(-4000);
-  if(out.logins&&out.logins.length>300) out.logins=out.logins.slice(-300);
+  out.tombs=[...tombs].slice(-1500);
+  if(out.logins&&out.logins.length>60) out.logins=out.logins.slice(-60);
   return out;
 }
 function queueSync(){
@@ -3164,7 +3189,7 @@ function queueSync(){
   CLOUD.dirty=true; storeCloud();          // there is something here the cloud has not seen
   if(SYNC.s!=='busy') setSync('wait','Saving to the cloud\u2026');
   clearTimeout(syncTimer);
-  syncTimer=setTimeout(()=>syncNow(true), 1500);
+  syncTimer=setTimeout(()=>syncNow(true), 1200);
 }
 async function syncNow(silent){
   if(!cloudOn()||syncing) return;
@@ -3191,20 +3216,34 @@ async function syncNow(silent){
         setSync('busy','Getting what changed\u2026');
         const full=await api(q+'&select=rev,data');
         const r2=full&&full[0];
-        if(r2){ db=mergeDB(db, r2.data||{}, !CLOUD.dirty); rev=r2.rev; changed=true; }
+        if(r2){ db=mergeDB(db, r2.data||{}, !CLOUD.dirty); seedSnap(); rev=r2.rev; changed=true; }
       }
     }
+    migrateUsers(); dedupeRecords();
     if(changed||CLOUD.dirty){
       setSync('busy','Sending\u2026');
-      const body=[{id:CLOUD.farm, rev:rev+1, data:db, updated_at:new Date().toISOString(),
-        updated_by:(SESSION?SESSION.name:'device')}];
-      const saved=await api('farm_state?on_conflict=id',{method:'POST',
-        headers:{apikey:CLOUD.key,Authorization:'Bearer '+CLOUD.key,'Content-Type':'application/json',
-          Prefer:'resolution=merge-duplicates,return=representation'},body:JSON.stringify(body)});
-      CLOUD.rev=(saved&&saved[0]?saved[0].rev:rev+1);
+      const payload={rev:rev+1, data:db, updated_at:new Date().toISOString(),
+        updated_by:(SESSION?SESSION.name:'device')};
+      let done=false;
+      if(row){
+        // only write if nobody else wrote while we were working; ask for the rev back, not the farm
+        const res=await api(q+'&rev=eq.'+rev+'&select=rev',{method:'PATCH',
+          headers:{apikey:CLOUD.key,Authorization:'Bearer '+CLOUD.key,'Content-Type':'application/json',
+            Prefer:'return=representation'},body:JSON.stringify(payload)});
+        if(res&&res.length){ CLOUD.rev=res[0].rev; done=true; }
+      }
+      if(!done){
+        const saved=await api('farm_state?on_conflict=id&select=rev',{method:'POST',
+          headers:{apikey:CLOUD.key,Authorization:'Bearer '+CLOUD.key,'Content-Type':'application/json',
+            Prefer:'resolution=merge-duplicates,return=representation'},
+          body:JSON.stringify([Object.assign({id:CLOUD.farm},payload)])});
+        CLOUD.rev=(saved&&saved[0]?saved[0].rev:rev+1);
+        if(row&&!done){                       // somebody slipped in \u2014 come back round once more
+          CLOUD.dirty=true; storeCloud(); syncing=false; return syncNow(true);
+        }
+      }
     } else CLOUD.rev=rev;
-    migrateUsers();
-    if(dedupeRecords()) CLOUD.dirty=true;
+    seedSnap();
     CLOUD.dirty=false; CLOUD.lastAt=new Date().toISOString(); storeCloud();
     try{ localStorage.setItem(KEY,JSON.stringify(db)); }catch(e){}
     setSync('ok','In step \u00b7 '+ftime(CLOUD.lastAt));
@@ -3233,7 +3272,9 @@ function vCloud(){
     h+=`<div class="card"><div class="spread"><div><b>${CLOUD.dirty?'Connected \u00b7 something still to send':'Connected'}</b>
       <div class="small muted">${esc(SYNC.msg)}</div>
       <div class="tiny muted">It sends a moment after you save, and checks for other people's entries every
-      10 seconds while the app is open \u2014 also when you switch back to it and when signal returns.</div></div>
+      10 seconds while the app is open \u2014 also when you switch back to it and when signal returns.</div>
+      <div class="tiny muted">Record size ${Math.round(JSON.stringify(db).length/1024)} KB \u00b7
+        ${SYNCABLE.reduce((a,k)=>a+(db[k]||[]).length,0)} entries</div></div>
       <button class="btn sm" onclick="syncNow()">Sync now</button></div>
       <hr class="sep">
       <div class="small"><span class="muted">Farm code:</span> ${esc(CLOUD.farm)}</div>
@@ -3316,8 +3357,12 @@ setInterval(()=>{                                  // every 10s while you are lo
   if(typeof document!=='undefined'&&document.hidden) return;
   syncNow(true);
 }, 10000);
+setInterval(()=>{                                  // and a slow check while it sits in the background
+  if(typeof document!=='undefined'&&!document.hidden) return;
+  syncNow(true);
+}, 120000);
 try{ if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{}); }catch(e){}
-load().then(()=>{ loadCloud(); migrateUsers(); dedupeRecords(); restoreSession(); render(); syncChip();
+load().then(()=>{ loadCloud(); migrateUsers(); dedupeRecords(); seedSnap(); restoreSession(); render(); syncChip();
   if(cloudOn()){ setSync('busy','Syncing…'); syncNow(true); } });
 
 </script>

@@ -1,6 +1,6 @@
 /* Piggery Record - offline cache.
    Bump CACHE when you upload a new index.html. */
-const CACHE = 'piggery-v27';
+const CACHE = 'piggery-v28';
 const SHELL = ['./', './index.html', './manifest.webmanifest',
                './icon-192.png', './icon-512.png', './icon-maskable-512.png', './logo.png'];
 
